@@ -4,11 +4,12 @@
 namespace uramnoil\virtualchest\disguiser;
 
 use pocketmine\level\Position;
+use pocketmine\network\mcpe\protocol\ContainerOpenPacket;
+use pocketmine\network\mcpe\protocol\types\WindowTypes;
 use pocketmine\Player;
 use uramnoil\virtualchest\inventory\VirtualChestInventory;
 
 abstract class ChestImpersonator {
-
 	/** @var Player */
 	protected $impersonated;
 	/** @var VirtualChestInventory */
@@ -57,7 +58,18 @@ abstract class ChestImpersonator {
 
 	/**
 	 * プレイヤーにコンテナを送ります.
-	 * コンテナを送る際は１Tickのみ遅延させてください.
+	 * WindowTypesに依存してるのでいつか修正します.
 	 */
-	abstract protected function sendContainerPacket() : void;
+	private function sendContainerPacket() : void {
+		$pk = new ContainerOpenPacket();
+		$pk->windowId = $this->impersonated->getWindowId($this->inventory);
+		$pk->type = WindowTypes::CONTAINER;
+		$pk->x = $this->basedPosition->x;
+		$pk->y = $this->basedPosition->y;
+		$pk->z = $this->basedPosition->z;
+
+		$this->impersonated->dataPacket($pk);
+
+		$this->inventory->sendContents($this->impersonated);
+	}
 }
