@@ -18,7 +18,7 @@ class DoubleChestImpersonator extends ChestImpersonator {
 	public function __construct(Player $impersonated, VirtualChestInventory $inventory) {
 		parent::__construct($impersonated, $inventory);
 		$this->chest1 = BlockFactory::get(BlockIds::CHEST, null, $this->basedPosition);
-		$this->chest2 = $this->chest1->
+		$this->chest2 = BlockFactory::get(BlockIds::CHEST, null, $this->basedPosition->add);
 	}
 
 	protected function sendChestBlocks() : void {
