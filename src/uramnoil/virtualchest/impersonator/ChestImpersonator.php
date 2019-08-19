@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualchest\disguiser;
+namespace uramnoil\virtualchest\impersonator;
 
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\ContainerOpenPacket;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualchest\disguiser;
+namespace uramnoil\virtualchest\impersonator;
 
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockIds;
