@@ -1,15 +1,15 @@
 <?php
 
 
-namespace uramnoil\virtualchest\impersonator;
+namespace uramnoil\virtualinventory\impersonator;
 
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\ContainerOpenPacket;
 use pocketmine\network\mcpe\protocol\types\WindowTypes;
 use pocketmine\Player;
-use uramnoil\virtualchest\inventory\VirtualChestInventory;
+use uramnoil\virtualinventory\inventory\VirtualChestInventory;
 
-abstract class ChestImpersonator {
+abstract class Impersonator {
 	/** @var Player */
 	protected $impersonated;
 	/** @var VirtualChestInventory */

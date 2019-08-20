@@ -1,14 +1,14 @@
 <?php
 
 
-namespace uramnoil\virtualchest\inventory;
+namespace uramnoil\virtualinventory\inventory;
 
 use pocketmine\inventory\BaseInventory;
 use pocketmine\IPlayer;
 use pocketmine\Player;
-use uramnoil\virtualchest\impersonator\ChestImpersonator;
-use uramnoil\virtualchest\impersonator\NormalChestImpersonator;
-use uramnoil\virtualchest\repository\VirtualChestInventoryRepository;
+use uramnoil\virtualinventory\impersonator\Impersonator;
+use uramnoil\virtualinventory\impersonator\NormalChestImpersonator;
+use uramnoil\virtualinventory\repository\VirtualChestInventoryRepository;
 use function spl_object_hash;
 
 abstract class VirtualChestInventory extends BaseInventory {
@@ -25,12 +25,12 @@ abstract class VirtualChestInventory extends BaseInventory {
 	/**
 	 * VirtualChestInventory constructor.
 	 *
-	 * @param \uramnoil\virtualchest\repository\VirtualChestInventoryRepository $repository
-	 * @param int                                                               $id
-	 * @param \pocketmine\IPlayer                                               $owner
-	 * @param array                                                             $items
-	 * @param int|null                                                          $size
-	 * @param string|null                                                       $title
+	 * @param \uramnoil\virtualinventory\repository\VirtualChestInventoryRepository $repository
+	 * @param int                                                                   $id
+	 * @param \pocketmine\IPlayer                                                   $owner
+	 * @param array                                                                 $items
+	 * @param int|null                                                              $size
+	 * @param string|null                                                           $title
 	 */
 	public function __construct(VirtualChestInventoryRepository $repository, int $id, IPlayer $owner, $items = [], int $size = null, string $title = null) {
 		parent::__construct($items, $size, $title);
@@ -58,5 +58,5 @@ abstract class VirtualChestInventory extends BaseInventory {
 		unset($this->impersonators[spl_object_hash($who)]);
 	}
 
-	abstract public function createImpersonatorFrom(Player $impersonated) : ChestImpersonator;
+	abstract public function createImpersonatorFrom(Player $impersonated) : Impersonator;
 }

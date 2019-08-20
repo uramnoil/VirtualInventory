@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualchest\impersonator;
+namespace uramnoil\virtualinventory\impersonator;
 
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockIds;
@@ -9,10 +9,10 @@ use pocketmine\nbt\NetworkLittleEndianNBTStream;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\BlockEntityDataPacket;
 use pocketmine\Player;
-use uramnoil\virtualchest\inventory\VirtualChestInventory;
+use uramnoil\virtualinventory\inventory\VirtualChestInventory;
 use pocketmine\tile\Chest;
 
-class DoubleChestImpersonator extends ChestImpersonator {
+class DoubleChestImpersonator extends Impersonator {
 	/** @var Chest */
 	protected $chest1;
 	/** @var Chest */

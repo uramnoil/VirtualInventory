@@ -1,13 +1,13 @@
 <?php
 
 
-namespace uramnoil\virtualchest;
+namespace uramnoil\virtualinventory;
 
 
 use pocketmine\IPlayer;
 use pocketmine\plugin\PluginBase;
-use uramnoil\virtualchest\inventory\VirtualChestInventory;
-use uramnoil\virtualchest\repository\VirtualChestInventoryRepository;
+use uramnoil\virtualinventory\inventory\VirtualChestInventory;
+use uramnoil\virtualinventory\repository\VirtualChestInventoryRepository;
 
 class VirtualChestPlugin extends PluginBase implements VirtualChestAPI {
 	/** @var VirtualChestAPI */

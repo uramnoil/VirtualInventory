@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualchest\inventory;
+namespace uramnoil\virtualinventory\inventory;
 
 
 use pocketmine\IPlayer;

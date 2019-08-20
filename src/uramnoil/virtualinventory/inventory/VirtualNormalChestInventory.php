@@ -1,11 +1,11 @@
 <?php
 
 
-namespace uramnoil\virtualchest\inventory;
+namespace uramnoil\virtualinventory\inventory;
 
 use pocketmine\Player;
-use uramnoil\virtualchest\impersonator\ChestImpersonator;
-use uramnoil\virtualchest\impersonator\NormalChestImpersonator;
+use uramnoil\virtualinventory\impersonator\Impersonator;
+use uramnoil\virtualinventory\impersonator\NormalChestImpersonator;
 
 class VirtualNormalChestInventory extends VirtualChestInventory {
 	public function getName() : string {
@@ -16,7 +16,7 @@ class VirtualNormalChestInventory extends VirtualChestInventory {
 		return 27;
 	}
 
-	public function createImpersonatorFrom(Player $impersonated) : ChestImpersonator {
+	public function createImpersonatorFrom(Player $impersonated) : Impersonator {
 		return new NormalChestImpersonator($impersonated, $this);
 	}
 }

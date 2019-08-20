@@ -1,9 +1,9 @@
 <?php
 
-namespace uramnoil\virtualchest\repository;
+namespace uramnoil\virtualinventory\repository;
 
 use pocketmine\IPlayer;
-use uramnoil\virtualchest\inventory\VirtualChestInventory;
+use uramnoil\virtualinventory\inventory\VirtualChestInventory;
 
 interface VirtualChestInventoryRepository {
 	/**
@@ -43,7 +43,7 @@ interface VirtualChestInventoryRepository {
 	/**
 	 * VirtualChestInvnentoryをセーブします.
 	 *
-	 * @param \uramnoil\virtualchest\inventory\VirtualChestInventory $inventory
+	 * @param \uramnoil\virtualinventory\inventory\VirtualChestInventory $inventory
 	 */
 	public function save(VirtualChestInventory $inventory) : void;
 }

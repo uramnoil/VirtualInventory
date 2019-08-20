@@ -1,9 +1,9 @@
 <?php
 
-namespace uramnoil\virtualchest;
+namespace uramnoil\virtualinventory;
 
 use pocketmine\IPlayer;
-use uramnoil\virtualchest\inventory\VirtualChestInventory;
+use uramnoil\virtualinventory\inventory\VirtualChestInventory;
 
 interface VirtualChestAPI {
 	/**
@@ -27,14 +27,14 @@ interface VirtualChestAPI {
 	/**
 	 * VirtualChestInventoryを削除します.
 	 *
-	 * @param \uramnoil\virtualchest\inventory\VirtualChestInventory $inventory
+	 * @param \uramnoil\virtualinventory\inventory\VirtualChestInventory $inventory
 	 */
 	public function delete(VirtualChestInventory $inventory) : void;
 
 	/**
 	 * @param \pocketmine\IPlayer $owner
 	 *
-	 * @return \uramnoil\virtualchest\inventory\VirtualChestInventory
+	 * @return \uramnoil\virtualinventory\inventory\VirtualChestInventory
 	 */
 	public function new(IPlayer $owner) : VirtualChestInventory;
 }
