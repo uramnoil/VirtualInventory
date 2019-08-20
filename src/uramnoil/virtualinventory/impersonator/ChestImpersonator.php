@@ -11,7 +11,7 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\mcpe\protocol\BlockEntityDataPacket;
 use pocketmine\tile\Tile;
 
-class NormalChestImpersonator extends Impersonator {
+class ChestImpersonator extends Impersonator {
 	protected function sendChestBlocks() : void {
 		$chest = BlockFactory::get(BlockIds::CHEST, null, $this->basedPosition);
 		$this->replacedPositions[] = $this->basedPosition;

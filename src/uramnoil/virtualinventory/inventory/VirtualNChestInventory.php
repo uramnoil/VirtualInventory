@@ -5,9 +5,9 @@ namespace uramnoil\virtualinventory\inventory;
 
 use pocketmine\Player;
 use uramnoil\virtualinventory\impersonator\Impersonator;
-use uramnoil\virtualinventory\impersonator\NormalChestImpersonator;
+use uramnoil\virtualinventory\impersonator\ChestImpersonator;
 
-class VirtualNormalChestInventory extends VirtualChestInventory {
+class VirtualNChestInventory extends VirtualInventory {
 	public function getName() : string {
 		return "Virtual Normal Chest";
 	}
@@ -17,6 +17,6 @@ class VirtualNormalChestInventory extends VirtualChestInventory {
 	}
 
 	public function createImpersonatorFrom(Player $impersonated) : Impersonator {
-		return new NormalChestImpersonator($impersonated, $this);
+		return new ChestImpersonator($impersonated, $this);
 	}
 }

@@ -8,7 +8,7 @@ use pocketmine\Player;
 use uramnoil\virtualinventory\impersonator\Impersonator;
 use uramnoil\virtualinventory\impersonator\DoubleChestImpersonator;
 
-class VirtualDoubleChestInventory extends VirtualChestInventory {
+class VirtualDoubleChestInventory extends VirtualInventory {
 	public function getName() : string {
 		return "Virtual Double Chest Inventory";
 	}

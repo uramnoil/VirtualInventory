@@ -7,19 +7,19 @@ use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\ContainerOpenPacket;
 use pocketmine\network\mcpe\protocol\types\WindowTypes;
 use pocketmine\Player;
-use uramnoil\virtualinventory\inventory\VirtualChestInventory;
+use uramnoil\virtualinventory\inventory\VirtualInventory;
 
 abstract class Impersonator {
 	/** @var Player */
 	protected $impersonated;
-	/** @var VirtualChestInventory */
+	/** @var VirtualInventory */
 	protected $inventory;
 	/** @var Position[] */
 	protected $replacedPositions = [];
 	/** @var Position */
 	protected $basedPosition;
 
-	public function __construct(Player $impersonated, VirtualChestInventory $inventory) {
+	public function __construct(Player $impersonated, VirtualInventory $inventory) {
 		$this->impersonated = $impersonated;
 		$this->inventory = $inventory;
 		$this->basedPosition = Position::fromObject($impersonated->floor(), $impersonated->getLevel());

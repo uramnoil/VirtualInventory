@@ -9,7 +9,7 @@ use pocketmine\nbt\NetworkLittleEndianNBTStream;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\BlockEntityDataPacket;
 use pocketmine\Player;
-use uramnoil\virtualinventory\inventory\VirtualChestInventory;
+use uramnoil\virtualinventory\inventory\VirtualInventory;
 use pocketmine\tile\Chest;
 
 class DoubleChestImpersonator extends Impersonator {
@@ -18,7 +18,7 @@ class DoubleChestImpersonator extends Impersonator {
 	/** @var Chest */
 	protected $chest2;
 
-	public function __construct(Player $impersonated, VirtualChestInventory $inventory) {
+	public function __construct(Player $impersonated, VirtualInventory $inventory) {
 		parent::__construct($impersonated, $inventory);
 		$this->chest1 = BlockFactory::get(BlockIds::CHEST, null, $this->basedPosition);
 		$this->chest2 = BlockFactory::get(BlockIds::CHEST)->setComponents(

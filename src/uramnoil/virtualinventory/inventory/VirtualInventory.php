@@ -7,14 +7,14 @@ use pocketmine\inventory\BaseInventory;
 use pocketmine\IPlayer;
 use pocketmine\Player;
 use uramnoil\virtualinventory\impersonator\Impersonator;
-use uramnoil\virtualinventory\impersonator\NormalChestImpersonator;
-use uramnoil\virtualinventory\repository\VirtualChestInventoryRepository;
+use uramnoil\virtualinventory\impersonator\ChestImpersonator;
+use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
 use function spl_object_hash;
 
-abstract class VirtualChestInventory extends BaseInventory {
-	/** @var VirtualChestInventoryRepository */
+abstract class VirtualInventory extends BaseInventory {
+	/** @var VirtualInventoryRepository */
 	private $repository;
-	/** @var NormalChestImpersonator[] */
+	/** @var ChestImpersonator[] */
 	private $impersonators = [];
 
 	/** @var int */
@@ -25,14 +25,14 @@ abstract class VirtualChestInventory extends BaseInventory {
 	/**
 	 * VirtualChestInventory constructor.
 	 *
-	 * @param \uramnoil\virtualinventory\repository\VirtualChestInventoryRepository $repository
-	 * @param int                                                                   $id
-	 * @param \pocketmine\IPlayer                                                   $owner
-	 * @param array                                                                 $items
-	 * @param int|null                                                              $size
-	 * @param string|null                                                           $title
+	 * @param \uramnoil\virtualinventory\repository\VirtualInventoryRepository $repository
+	 * @param int                                                              $id
+	 * @param \pocketmine\IPlayer                                              $owner
+	 * @param array                                                            $items
+	 * @param int|null                                                         $size
+	 * @param string|null                                                      $title
 	 */
-	public function __construct(VirtualChestInventoryRepository $repository, int $id, IPlayer $owner, $items = [], int $size = null, string $title = null) {
+	public function __construct(VirtualInventoryRepository $repository, int $id, IPlayer $owner, $items = [], int $size = null, string $title = null) {
 		parent::__construct($items, $size, $title);
 		$this->repository = $repository;
 		$this->id = $id;
