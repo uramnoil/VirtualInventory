@@ -43,7 +43,7 @@ interface VirtualInventoryRepository {
 	/**
 	 * VirtualChestInvnentoryをセーブします.
 	 *
-	 * @param \uramnoil\virtualinventory\inventory\VirtualInventory $inventory
+	 * @param VirtualInventory $inventory
 	 */
 	public function save(VirtualInventory $inventory) : void;
 
