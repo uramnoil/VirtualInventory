@@ -21,10 +21,11 @@ class MockVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 	public function new(IPlayer $owner) : VirtualInventory {
-		// TODO: Implement new() method.
 	}
 
 	public function save(VirtualInventory $inventory) : void {
-		// TODO: Implement save() method.
+	}
+
+	public function close() : void {
 	}
 }
