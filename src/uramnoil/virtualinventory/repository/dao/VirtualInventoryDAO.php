@@ -4,7 +4,11 @@
 namespace uramnoil\virtualinventory\repository\dao;
 
 
+use uramnoil\virtualinventory\VirtualInventoryPlugin;
+
 interface VirtualInventoryDAO {
+	public function __construct(VirtualInventoryPlugin $plugin);
+
 	/**
 	 * @param int $id
 	 *
@@ -26,12 +30,17 @@ interface VirtualInventoryDAO {
 
 	/**
 	 * @param int   $id
-	 * @param array $inventory
+	 * @param array $items
 	 */
-	public function update(int $id, array $inventory) : void;
+	public function update(int $id, array $items) : void;
 
 	/**
-	 *
+	 * DBのコネクションを作ります.
+	 */
+	public function open() : void;
+
+	/**
+	 * DBのコネクションを終了します.
 	 */
 	public function close() : void;
 }

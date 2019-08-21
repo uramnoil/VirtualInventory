@@ -1,3 +1,5 @@
 {
-
+  "require": {
+    "ext-sqlite3": "*"
+  }
 }

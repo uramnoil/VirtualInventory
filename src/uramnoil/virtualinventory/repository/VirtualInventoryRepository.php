@@ -15,10 +15,8 @@ interface VirtualInventoryRepository {
 	 *
 	 * @param int $id
 	 * @param Closure $done
-	 *
-	 * @return VirtualInventory
 	 */
-	public function findById(int $id, Closure $done) : VirtualInventory;
+	public function findById(int $id, Closure $done) : void;
 
 	/**
 	 * 所有者でVirtualChestInventoryを探します.
@@ -42,10 +40,8 @@ interface VirtualInventoryRepository {
 	 *
 	 * @param IPlayer $owner
 	 * @param Closure $done
-	 *
-	 * @return VirtualInventory
 	 */
-	public function new(IPlayer $owner, Closure $done) : VirtualInventory;
+	public function new(IPlayer $owner, Closure $done) : void;
 
 	/**
 	 * VirtualChestInvnentoryをセーブします.

@@ -25,9 +25,9 @@ abstract class VirtualInventory extends BaseInventory {
 	/**
 	 * VirtualChestInventory constructor.
 	 *
-	 * @param \uramnoil\virtualinventory\repository\VirtualInventoryRepository $repository
+	 * @param VirtualInventoryRepository $repository
 	 * @param int                                                              $id
-	 * @param \pocketmine\IPlayer                                              $owner
+	 * @param IPlayer                                              $owner
 	 * @param array                                                            $items
 	 * @param int|null                                                         $size
 	 * @param string|null                                                      $title
