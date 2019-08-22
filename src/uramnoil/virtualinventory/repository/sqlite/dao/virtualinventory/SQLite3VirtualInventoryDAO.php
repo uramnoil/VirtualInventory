@@ -82,6 +82,7 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 				)
 				SQL_CREATE
 			);
+			$stmt->bindValue(':owner_name', strtolower($ownerName));
 			$result = $stmt->execute();
 		} catch(Exception $exception) {
 			throw new TransactionException($exception);
@@ -150,7 +151,7 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 		return $inventory;
 	}
 
-	public function findByOwner(string $name, array $option) : array {
+	public function findByOwner(string $name, array $option = []) : array {
 		try {
 			$stmt = $this->db->prepare(
 				/** @lang SQLite */
@@ -160,7 +161,7 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 				WHERE owner_name = :name
 				SQL_FIND_BY_OWNER
 			);
-			$stmt->bindValue(':name', $name);
+			$stmt->bindValue(':name', strtolower($name));
 			$inventoryResult = $stmt->execute();
 		} catch(Exception $exception) {
 			throw new TransactionException($exception);

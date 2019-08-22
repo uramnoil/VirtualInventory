@@ -8,6 +8,8 @@ use uramnoil\virtualinventory\repository\InventoryIds;
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
 
 interface VirtualInventoryDAO extends DAO {
+	public const FIND_BY_OWNER_OPTION_NOT_IN = 0;
+
 	/**
 	 * @param string $ownerName
 	 * @param int    $type
@@ -29,7 +31,7 @@ interface VirtualInventoryDAO extends DAO {
 	 *
 	 * @return array
 	 */
-	public function findByOwner(string $name, array $option) : array;
+	public function findByOwner(string $name, array $option = []) : array;
 
 	/**
 	 * @param int $id
