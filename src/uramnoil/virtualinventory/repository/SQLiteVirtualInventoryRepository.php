@@ -5,34 +5,35 @@ namespace uramnoil\virtualinventory\repository;
 
 
 use Closure;
-use pocketmine\inventory\Inventory;
 use pocketmine\IPlayer;
-use pocketmine\network\mcpe\protocol\types\WindowTypes;
 use pocketmine\Server;
 use pocketmine\utils\Utils;
 use uramnoil\virtualinventory\inventory\factory\VirtualChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\VirtualDoubleChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
-use uramnoil\virtualinventory\repository\dao\SQLite3VirtualInventoryDAO;
-use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
+use uramnoil\virtualinventory\repository\dao\virtualinventory\SQLite3VirtualInventoryDAO;
+use uramnoil\virtualinventory\repository\dao\virtualinventory\VirtualInventoryDAO;
+use uramnoil\virtualinventory\repository\extension\InventoryConverterTrait;
+use uramnoil\virtualinventory\repository\extension\SchedulerTrait;
 use uramnoil\virtualinventory\task\TransactionTask;
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
-
-use function uramnoil\virtualinventory\repository\extension\itemsToRaw;
-use function uramnoil\virtualinventory\repository\extension\rawToItems;
+use function strtolower;
 
 class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
+	use InventoryConverterTrait;
+	use SchedulerTrait;
+
 	/** @var VirtualInventoryFactory[] */
 	private $factories = [];
-	/** @var Inventory[] */
+	/** @var VirtualInventory[] */
 	private $cachedInventories = [];
 	/** @var VirtualInventoryPlugin  */
 	private $plugin;
 	/** @var VirtualInventoryDAO */
 	private $dao;
 
-	public function __construct(VirtualInventoryPlugin $plugin) {
+	public function __construct(VirtualInventoryPlugin $plugin) {	//OPTIMIZE	ファイルの保存場所さえ得られればいい
 		$this->plugin = $plugin;
 
 		$this->factories[SQLite3VirtualInventoryDAO::INVENTORY_TYPE_CHEST] = new VirtualChestInventoryFactory($this);
@@ -41,20 +42,42 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 
 	public function save(VirtualInventory $inventory) : void {
 		$id = $inventory->getId();
-		$itemsRaw = itemsToRaw($inventory->getContents(true));
+		$itemsRaw = $this->itemsToRaw($inventory->getContents(true));
 		$this->dao->update($id, $itemsRaw);
 	}
 
 
-	public function new(IPlayer $owner, Closure $onDone) : void {
+	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : void {
 		Utils::validateCallableSignature(function(VirtualInventory $inventory) : void{}, $onDone);
 
+		$task = new TransactionTask(function() use ($owner, $inventoryType) : VirtualInventory {
+			$inventoryRaw = $this->dao->create(strtolower($owner->getName()), $inventoryType);	//OPTIMIZE	ルールが散らばってる
+			return $this->factories[$inventoryType]->createFrom($inventoryRaw['inventory_id'], $owner);
+		}, $onDone);
 
+		$this->submitTask($task);
 	}
 
 	public function findByOwner(IPlayer $owner, Closure $onDone) : void {
-		// TODO: Implement findByOwner() method.
-		WindowTypes::
+		$notIn = [];
+		foreach($this->cachedInventories as $inventory) {
+			if($inventory->getOwner()->getName() === $owner->getName()) {
+				$notIn[$inventory->getId()] = $inventory;
+			}
+		}
+
+		$task = new TransactionTask(function() use($id, $notIn) : ?VirtualInventory {
+			$inventoryRaw = $this->dao->findById($id);
+			if($inventoryRaw !== null) return null;
+
+			$inventory = $this->factories[$inventoryRaw['inventory_type']]
+				->createFrom(
+					$inventoryRaw['inventory_id'],
+					Server::getInstance()->getOfflinePlayer($inventoryRaw['owner_name'])
+				);
+			$inventory->setContents($this->rawToItems($inventoryRaw['items']));
+			return $inventory;
+		}, $onDone);
 	}
 
 	public function findById(int $id, Closure $onDone) : void {
@@ -65,10 +88,13 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$task = new TransactionTask(function() use($id) : ?VirtualInventory {
 			$inventoryRaw = $this->dao->findById($id);
 			if($inventoryRaw !== null) return null;
-			$owner = Server::getInstance()->getOfflinePlayer($inventoryRaw['owner_name']);
-			$id = $inventoryRaw['inventory_id'];
-			$inventory = $this->factories[$inventoryRaw['inventory_type']]->createFrom($id, $owner);
-			$inventory->setContents(rawToItems($inventoryRaw['items']));
+
+			$inventory = $this->factories[$inventoryRaw['inventory_type']]
+				->createFrom(
+					$inventoryRaw['inventory_id'],
+					Server::getInstance()->getOfflinePlayer($inventoryRaw['owner_name'])
+				);
+			$inventory->setContents($this->rawToItems($inventoryRaw['items']));
 			return $inventory;
 		}, $onDone);
 
@@ -89,6 +115,6 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 	public function close() : void {
-		// TODO: Implement close() method.
+		$this->dao->close();
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\dao;
+namespace uramnoil\virtualinventory\repository\dao\virtualinventory;
 
 
 use Exception;
@@ -26,8 +26,9 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 	public function open() : void {
 		try {
 			$this->db = new SQLite3($this->plugin->getDataFolder() . "virtualinventory.db", SQLITE3_OPEN_CREATE);
-			$stmt = $this->db->prepare(
+			$this->db->exec(
 			/** @lang SQLite */
+				//PHP7.3 ヒアドキュメント
 				<<<SQL_CREATE_TABLE
 				CREATE TABLE IF NOT EXISTS inventories(
 					inventory_id    INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -57,9 +58,8 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 					inventory_type INTEGER PRIMARY KEY,
 					inventory_type_name TEXT NOT NULL UNIQUE
 				)
-			SQL_CREATE_TABLE
+				SQL_CREATE_TABLE
 			);
-			$stmt->execute();
 		} catch(Exception $exception) {
 			throw new TransactionException($exception);
 		}
@@ -69,13 +69,35 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 		$this->db->close();
 	}
 
+	public function create(string $ownerName, int $type) : array {
+		try {
+			$this->begin();
+			$stmt = $this->db->prepare(
+				/** @lang SQLite */
+				<<<SQL_CREATE
+				INSERT INTO inventories(inventory_type, owner_id)
+				VALUES (
+						:type,
+						(SELECT owner_id FROM owners WHERE owner_name = :owner_name)
+				)
+				SQL_CREATE
+			);
+			$result = $stmt->execute();
+		} catch(Exception $exception) {
+			throw new TransactionException($exception);
+		}
+
+		return $result->fetchArray();
+	}
+
 	public function delete(int $id) : void {
 		try {
 			$this->begin();
 			$stmt = $this->db->prepare(
+				/** @SQLite */
 				<<<SQL_DELETE
-					DELETE FROM inventories WHERE inventory_id = :id;
-					DELETE FROM items WHERE inventory_id = :id
+				DELETE FROM inventories WHERE inventory_id = :id;
+				DELETE FROM items WHERE inventory_id = :id
 				SQL_DELETE
 			);
 			$stmt->bindValue(':id', $id);
@@ -94,9 +116,9 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 			$stmt = $this->db->prepare(
 				/** @lang SQLite */
 				<<<SQL_FIND_BY_ID
-					SELECT * FROM inventories 
-						NATURAL INNER JOIN owners
-					WHERE inventory_id = :id
+				SELECT * FROM inventories 
+					NATURAL INNER JOIN owners
+				WHERE inventory_id = :id
 				SQL_FIND_BY_ID
 			);
 			$stmt->bindValue(':id', $id);
@@ -111,8 +133,8 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 			$stmt = $this->db->prepare(
 			/** @lang SQLite */
 				<<<SQL_FIND_BY_ID
-					SELECT * FROM items
-					WHERE inventory_id = :id
+				SELECT * FROM items
+				WHERE inventory_id = :id
 				SQL_FIND_BY_ID
 			);
 			$stmt->bindValue(':id', $inventoryRaw['inventory_id']);
@@ -128,13 +150,14 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 		return $inventory;
 	}
 
-	public function findByOwner(string $name) : array {
+	public function findByOwner(string $name, array $option) : array {
 		try {
 			$stmt = $this->db->prepare(
+				/** @lang SQLite */
 				<<<SQL_FIND_BY_OWNER
-					SELECT * FROM inventories
-						NATURAL INNER JOIN owners
-					WHERE owner_name = :name
+				SELECT * FROM inventories
+					NATURAL INNER JOIN owners
+				WHERE owner_name = :name
 				SQL_FIND_BY_OWNER
 			);
 			$stmt->bindValue(':name', $name);
@@ -154,10 +177,10 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 		try {
 			$stmt = $this->db->prepare(
 			/** @lang SQLite */
-				<<<SQL_FIND_BY_ID
-					SELECT * FROM items
-					WHERE inventory_id IN :array
-				SQL_FIND_BY_ID
+			<<<SQL_FIND_BY_ID
+				SELECT * FROM items
+				WHERE inventory_id IN :array
+			SQL_FIND_BY_ID
 			);
 			$stmt->bindValue(':array', implode(', ', $inventoryIds));
 			$itemsResult = $stmt->execute();
@@ -174,21 +197,18 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 			}
 		}
 
-		$inventoryRaws[] = $inventoryRaw;
-
-		//TODO 配列の構成
 		return $inventoryRaws;
 	}
 
 	public function update(int $id, array $items) : void {
 		try {
 			$this->begin();
-			foreach($items as $slot => $item) {
+			foreach($items as $slot => $item) {		//TODO	ループ中のクエリ発行をどうにかする
 				$stmt = $this->db->prepare(
 				/** @lang SQLite */
 					<<<SQL_UPDATE
-						UPDATE items SET item_id = :id, count = :count, damage = :damage, nbt_b64 = :nbt_b64
-						WHERE items.inventory_id = :inventory_id
+					UPDATE items SET item_id = :id, count = :count, damage = :damage, nbt_b64 = :nbt_b64
+					WHERE items.inventory_id = :inventory_id
 					SQL_UPDATE
 				);
 				$stmt->bindValue('id', $item['id']);
@@ -210,9 +230,9 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 	 */
 	private function begin() : void {
 		$this->db->exec(
-		/** @lang SQLite */
+			/** @lang SQLite */
 			<<<SQL_BEGIN
-				BEGIN
+			BEGIN
 			SQL_BEGIN);
 	}
 
@@ -221,9 +241,9 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 	 */
 	private function commit() : void {
 		$this->db->exec(
-		/** @lang SQLite */
+			/** @lang SQLite */
 			<<<SQL_COMMIT
-				COMMIT
+			COMMIT
 			SQL_COMMIT
 		);
 	}
@@ -233,10 +253,10 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 	 */
 	private function rollback() : void {
 		$this->db->exec(
-		/** @lang SQLite */
+			/** @lang SQLite */
 			<<<SQL_ROLLBACK
-					ROLLBACK
-				SQL_ROLLBACK
+			ROLLBACK
+			SQL_ROLLBACK
 		);
 	}
 }

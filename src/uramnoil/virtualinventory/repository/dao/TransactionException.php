@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\dao;
+namespace uramnoil\virtualinventory\repository\dao\virtualinventory;
 
 
 use RuntimeException;

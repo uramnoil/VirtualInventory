@@ -13,20 +13,18 @@ interface VirtualInventoryRepository {
 	/**
 	 * IDでVirtualChestInventoryを探します.
 	 *
-	 * @param int $id
-	 * @param Closure $done
+	 * @param int 	  $id
+	 * @param Closure $onDone
 	 */
-	public function findById(int $id, Closure $done) : void;
+	public function findById(int $id, Closure $onDone) : void;
 
 	/**
 	 * 所有者でVirtualChestInventoryを探します.
 	 *
 	 * @param IPlayer $owner
-	 * @param Closure $done
-	 *
-	 * @return VirtualInventory[]
+	 * @param Closure $onDone
 	 */
-	public function findByOwner(IPlayer $owner, Closure $done) : void;
+	public function findByOwner(IPlayer $owner, Closure $onDone) : void;
 
 	/**
 	 * VirtualChestInventoryをリポジトリから削除します.
@@ -39,16 +37,18 @@ interface VirtualInventoryRepository {
 	 * 新しいVirtualChestInventoryを作成します.
 	 *
 	 * @param IPlayer $owner
-	 * @param Closure $done
+	 * @param int	  $inventoryType
+	 * @param Closure $onDone
 	 */
-	public function new(IPlayer $owner, Closure $done) : void;
+	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : void;
 
 	/**
-	 * VirtualChestInvnentoryをセーブします.
+	 * VirtualChestInventoryをセーブします.
 	 *
 	 * @param VirtualInventory $inventory
+	 * @param Closure		   $onDone
 	 */
-	public function save(VirtualInventory $inventory) : void;
+	public function save(VirtualInventory $inventory, ?Closure $onDone = null) : void;
 
 	/**
 	 * Repositoryを終了させます.

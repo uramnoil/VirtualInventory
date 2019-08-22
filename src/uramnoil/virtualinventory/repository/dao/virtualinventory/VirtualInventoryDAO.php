@@ -1,13 +1,20 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\dao;
+namespace uramnoil\virtualinventory\repository\dao\virtualinventory;
 
 
+use uramnoil\virtualinventory\repository\InventoryIds;
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
 
-interface VirtualInventoryDAO {
-	public function __construct(VirtualInventoryPlugin $plugin);
+interface VirtualInventoryDAO extends DAO {
+	/**
+	 * @param string $ownerName
+	 * @param int    $type
+	 *
+	 * @return array
+	 */
+	public function create(string $ownerName, int $type) : array;
 
 	/**
 	 * @param int $id
@@ -18,10 +25,11 @@ interface VirtualInventoryDAO {
 
 	/**
 	 * @param string $name
+	 * @param array  $option
 	 *
 	 * @return array
 	 */
-	public function findByOwner(string $name) : array;
+	public function findByOwner(string $name, array $option) : array;
 
 	/**
 	 * @param int $id

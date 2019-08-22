@@ -39,9 +39,20 @@ abstract class VirtualInventory extends BaseInventory {
 		$this->owner = $owner;
 	}
 
-	public function getId() : int {
+	/**
+	 * @return int
+	 */
+	public final function getId() : int {
 		return $this->id;
 	}
+
+	/**
+	 * @return \pocketmine\IPlayer
+	 */
+	public final function getOwner() : IPlayer {
+		return $this->owner;
+	}
+
 
 	/**
 	 * VirtualChestInventoryが削除されたとき.
