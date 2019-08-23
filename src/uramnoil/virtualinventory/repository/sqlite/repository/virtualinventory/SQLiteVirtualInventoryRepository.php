@@ -46,16 +46,18 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 	public function save(VirtualInventory $inventory, ?Closure $onDone = null) : void {
-		$task = new TransactionTask(function() use ($inventory) : void {
+		Utils::validateCallableSignature(function(object $noUse) : void{}, $onDone);
+
+		$task = new TransactionTask(function() use ($inventory) : ?object {
 			$this->dao->update($inventory->getId(), $this->itemsToRaw($inventory->getContents(true)));
-		}, $onDone ?: function() : void {});
+			return null;
+		}, $onDone ?: function(object $onUse) : void {});
 
 		$this->submitTask($task);
 	}
 
 
 	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : void {
-		Utils::validateCallableSignature(function(VirtualInventory $inventory) : void{}, $onDone);
 
 		$task = new TransactionTask(function() use ($owner, $inventoryType) : VirtualInventory {
 			$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType);	//OPTIMIZE	ルールが散らばってる
@@ -66,6 +68,8 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 	public function findByOwner(IPlayer $owner, Closure $onDone) : void {
+		Utils::validateCallableSignature(function(array $inventories) : void{}, $onDone);
+
 		$task = new TransactionTask(function() use($owner) : array {
 			$idsNotIn = [];
 			$cachedInventories = [];
@@ -96,6 +100,8 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 	public function findById(int $id, Closure $onDone) : void {
+		Utils::validateCallableSignature(function(?VirtualInventory $inventory) : void{}, $onDone);
+
 		if(isset($this->cachedInventories[$id])) {
 			return $onDone($this->cachedInventories[$id]);
 		}
@@ -117,13 +123,12 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 	public function delete(VirtualInventory $inventory) : void {
-		$inventory->onDelete();
-		$id = $inventory->getId();
 
-		$task = new TransactionTask(function() use($id) : void {
-			$this->dao->delete($id);
-		}, function(?object $result) use($id) : void {
-			unset($this->cachedInventories[$id]);
+		$task = new TransactionTask(function() use($inventory) : void {
+			$this->dao->delete($inventory->getId());
+		}, function(?object $result) use($inventory) : void {
+			$inventory->onDelete();
+			unset($this->cachedInventories[$inventory->getId()]);
 		});
 
 		$this->submitTask($task);
