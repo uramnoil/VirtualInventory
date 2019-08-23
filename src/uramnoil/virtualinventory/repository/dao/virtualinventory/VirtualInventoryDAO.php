@@ -43,14 +43,4 @@ interface VirtualInventoryDAO extends DAO {
 	 * @param array $items
 	 */
 	public function update(int $id, array $items) : void;
-
-	/**
-	 * DBのコネクションを作ります.
-	 */
-	public function open() : void;
-
-	/**
-	 * DBのコネクションを終了します.
-	 */
-	public function close() : void;
 }
