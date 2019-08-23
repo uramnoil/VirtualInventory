@@ -17,4 +17,9 @@ interface OwnerDAO extends DAO {
 	 * @param string $name
 	 */
 	public function delete(string $name) : void;
+
+	/**
+	 * @param string $name
+	 */
+	public function exists(string $name) : void;
 }
