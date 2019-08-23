@@ -45,13 +45,15 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$this->dao->close();
 	}
 
-	public function save(VirtualInventory $inventory, ?Closure $onDone = null) : void {
-		Utils::validateCallableSignature(function(object $noUse) : void{}, $onDone);
+	public function save(VirtualInventory $inventory, ?Closure $onDone) : void {
+		$onDone !== null ?
+			Utils::validateCallableSignature(function(object $noUse) : void{}, $onDone)
+			: $onDone = function(object $onUse) : void {};
 
 		$task = new TransactionTask(function() use ($inventory) : ?object {
 			$this->dao->update($inventory->getId(), $this->itemsToRaw($inventory->getContents(true)));
 			return null;
-		}, $onDone ?: function(object $onUse) : void {});
+		}, $onDone);
 
 		$this->submitTask($task);
 	}
@@ -62,7 +64,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$task = new TransactionTask(function() use ($owner, $inventoryType) : VirtualInventory {
 			$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType);	//OPTIMIZE	ルールが散らばってる
 			return $this->factories[$inventoryType]->createFrom($inventoryRaw['inventory_id'], $owner);
-		}, $onDone ?: function(VirtualInventory $inventory) : void {});
+		}, $onDone ?? function(VirtualInventory $inventory) : void {});
 
 		$this->submitTask($task);
 	}
@@ -122,13 +124,17 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$this->submitTask($task);
 	}
 
-	public function delete(VirtualInventory $inventory) : void {
+	public function delete(VirtualInventory $inventory, ?Closure $onDone) : void {
+		isset($onDone) ?
+			Utils::validateCallableSignature(function(?object $result) : void{}, $onDone)
+			: $onDone = function(?object $result) : void {};
 
 		$task = new TransactionTask(function() use($inventory) : void {
 			$this->dao->delete($inventory->getId());
-		}, function(?object $result) use($inventory) : void {
+		}, function(?object $result) use($inventory, $onDone) : void {
 			$inventory->onDelete();
 			unset($this->cachedInventories[$inventory->getId()]);
+			$onDone($result);
 		});
 
 		$this->submitTask($task);
