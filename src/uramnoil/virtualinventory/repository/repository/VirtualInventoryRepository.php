@@ -41,7 +41,7 @@ interface VirtualInventoryRepository {
 	 * @param int	  $inventoryType
 	 * @param Closure $onDone
 	 */
-	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : void;
+	public function new(IPlayer $owner, int $inventoryType, ?Closure $onDone = null) : void;
 
 	/**
 	 * VirtualChestInventoryをセーブします.
@@ -49,7 +49,7 @@ interface VirtualInventoryRepository {
 	 * @param VirtualInventory $inventory
 	 * @param Closure		   $onDone
 	 */
-	public function save(VirtualInventory $inventory, ?Closure $onDone = null) : void;
+	public function save(VirtualInventory $inventory, ?Closure $onDone) : void;
 
 	/**
 	 * Repositoryを終了させます.
