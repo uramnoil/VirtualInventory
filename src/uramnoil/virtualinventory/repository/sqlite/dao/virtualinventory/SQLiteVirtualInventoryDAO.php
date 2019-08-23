@@ -48,11 +48,6 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 					UNIQUE(inventory_id, slot),
 					FOREIGN KEY (inventory_id) REFERENCES inventories(inventory_id)
 				);
-
-				CREATE TABLE IF NOT EXISTS owners(
-					owner_id   INTEGER PRIMARY KEY AUTOINCREMENT,
-					owner_name TEXT NOT NULL UNIQUE
-				);
 				
 				CREATE TABLE IF NOT EXISTS inventory_types(
 					inventory_type INTEGER PRIMARY KEY,
