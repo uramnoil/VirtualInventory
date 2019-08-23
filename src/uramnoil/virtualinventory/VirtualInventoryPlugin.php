@@ -91,20 +91,16 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		$this->submitTask($task);
 	}
 
-
-
-
-
-
-
 	public function newInventory(IPlayer $owner, int $type, callable $onDone) : void {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
 
-		$task = new TransactionTask(function() use ($owner, $inventoryType) : VirtualInventory {
-			return $this->inventoryRepository->new($owner);
+		$task = new TransactionTask(function() use ($owner, $type) : VirtualInventory {
+			return $this->inventoryRepository->new($owner,$type);
 		}, $onDone ?? function(VirtualInventory $inventory) : void {});
+
+		$this->submitTask($task);
 	}
 
 	public function save(VirtualInventory $inventory, callable $onDone) : void {
@@ -119,6 +115,8 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 			$this->inventoryRepository->save($inventory);
 			return null;
 		}, $onDone);
+
+		$this->submitTask($task);
 	}
 
 	public function registerOwner(IPlayer $owner) : void {
