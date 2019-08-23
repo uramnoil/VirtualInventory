@@ -30,8 +30,9 @@ interface VirtualInventoryRepository {
 	 * VirtualChestInventoryをリポジトリから削除します.
 	 *
 	 * @param VirtualInventory $inventory
+	 * @param Closure|null     $onDone
 	 */
-	public function delete(VirtualInventory $inventory) : void;
+	public function delete(VirtualInventory $inventory, ?Closure $onDone) : void;
 
 	/**
 	 * 新しいVirtualChestInventoryを作成します.
