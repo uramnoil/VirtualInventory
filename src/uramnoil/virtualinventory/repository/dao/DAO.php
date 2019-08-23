@@ -4,8 +4,8 @@
 namespace uramnoil\virtualinventory\repository\dao\virtualinventory;
 
 
-use uramnoil\virtualinventory\VirtualInventoryPlugin;
+use pocketmine\plugin\PluginBase;
 
 interface DAO {
-	public function __construct(VirtualInventoryPlugin $plugin);
+	public function __construct(PluginBase $plugin);
 }

@@ -6,20 +6,20 @@ namespace uramnoil\virtualinventory\repository;
 
 use Closure;
 use pocketmine\IPlayer;
+use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\Utils;
 use uramnoil\virtualinventory\inventory\factory\VirtualChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\VirtualDoubleChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
-use uramnoil\virtualinventory\repository\dao\virtualinventory\SQLite3VirtualInventoryDAO;
+use uramnoil\virtualinventory\repository\dao\virtualinventory\SQLiteVirtualInventoryDAO;
 use uramnoil\virtualinventory\repository\dao\virtualinventory\VirtualInventoryDAO;
 use uramnoil\virtualinventory\repository\extension\InventoryConverterTrait;
 use uramnoil\virtualinventory\repository\extension\SchedulerTrait;
 use uramnoil\virtualinventory\task\TransactionTask;
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
 use function array_merge;
-use function strtolower;
 
 class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	use InventoryConverterTrait;
@@ -34,11 +34,11 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	/** @var VirtualInventoryDAO */
 	private $dao;
 
-	public function __construct(VirtualInventoryPlugin $plugin) {	//OPTIMIZE	ファイルの保存場所さえ得られればいい
+	public function __construct(PluginBase $plugin) {	//OPTIMIZE	ファイルの保存場所さえ得られればいい
 		$this->plugin = $plugin;
 
-		$this->factories[SQLite3VirtualInventoryDAO::INVENTORY_TYPE_CHEST]        = new VirtualChestInventoryFactory($this);
-		$this->factories[SQLite3VirtualInventoryDAO::INVENTORY_TYPE_DOUBLE_CHEST] = new VirtualDoubleChestInventoryFactory($this);
+		$this->factories[SQLiteVirtualInventoryDAO::INVENTORY_TYPE_CHEST]        = new VirtualChestInventoryFactory($this);
+		$this->factories[SQLiteVirtualInventoryDAO::INVENTORY_TYPE_DOUBLE_CHEST] = new VirtualDoubleChestInventoryFactory($this);
 	}
 
 	public function close() : void {
@@ -49,6 +49,8 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$task = new TransactionTask(function() use ($inventory) : void {
 			$this->dao->update($inventory->getId(), $this->itemsToRaw($inventory->getContents(true)));
 		}, $onDone ?: function() : void {});
+
+		$this->submitTask($task);
 	}
 
 
@@ -73,7 +75,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 					$idsNotIn[$inventory->getId()] = $inventory;
 				}
 			}
-			$inventoryRaws = $this->dao->findByOwner($owner->getName(), [VirtualInventoryDAO::FIND_BY_OWNER_OPTION_NOT_IN => $idsNotIn]);
+			$inventoryRaws = $this->dao->findByOwner($owner->getName(), [VirtualInventoryDAO::OPTION_IDS_NOT_IN => $idsNotIn]);
 
 			$inventories = [];
 
@@ -111,7 +113,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 			return $inventory;
 		}, $onDone);
 
-		Server::getInstance()->getAsyncPool()->submitTask($task);
+		$this->submitTask($task);
 	}
 
 	public function delete(VirtualInventory $inventory) : void {
@@ -124,6 +126,6 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 			unset($this->cachedInventories[$id]);
 		});
 
-		Server::getInstance()->getAsyncPool()->submitTask($task);
+		$this->submitTask($task);
 	}
 }

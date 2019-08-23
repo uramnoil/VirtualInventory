@@ -4,11 +4,11 @@ namespace uramnoil\virtualinventory\repository;
 
 use Closure;
 use pocketmine\IPlayer;
+use pocketmine\plugin\PluginBase;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
-use uramnoil\virtualinventory\VirtualInventoryPlugin;
 
 interface VirtualInventoryRepository {
-	public function __construct(VirtualInventoryPlugin $plugin);
+	public function __construct(PluginBase $plugin);
 
 	/**
 	 * IDでVirtualChestInventoryを探します.

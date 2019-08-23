@@ -5,21 +5,21 @@ namespace uramnoil\virtualinventory\repository\dao\virtualinventory;
 
 
 use Exception;
+use pocketmine\plugin\PluginBase;
 use SQLite3;
-use uramnoil\virtualinventory\VirtualInventoryPlugin;
 use const SQLITE3_OPEN_CREATE;
 
-class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
+class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 	public const INVENTORY_TYPE_NONE = -1;
 	public const INVENTORY_TYPE_CHEST = 0;
 	public const INVENTORY_TYPE_DOUBLE_CHEST = 1;
 
-	/** @var VirtualInventoryPlugin */
+	/** @var PluginBase */
 	private $plugin;
 	/** @var SQLite3*/
 	private $db;
 
-	public function __construct(VirtualInventoryPlugin $plugin) {
+	public function __construct(PluginBase $plugin) {
 		$this->plugin = $plugin;
 	}
 
@@ -209,7 +209,7 @@ class SQLite3VirtualInventoryDAO implements VirtualInventoryDAO {
 				/** @lang SQLite */
 					<<<SQL_UPDATE
 					UPDATE items SET item_id = :id, count = :count, damage = :damage, nbt_b64 = :nbt_b64
-					WHERE items.inventory_id = :inventory_id
+					WHERE inventory_id = :inventory_id
 					SQL_UPDATE
 				);
 				$stmt->bindValue('id', $item['id']);

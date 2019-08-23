@@ -15,6 +15,6 @@ class VirtualInventoryRepositoryFactory {
 	}
 
 	public function create() : VirtualInventoryRepository {
-		return new MySQLVirtualChestInventoryRepository($this->plugin);
+		return new SQLiteVirtualInventoryRepository($this->plugin);
 	}
 }
