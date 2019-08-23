@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\dao\virtualinventory;
+namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory;
 
 
 use Exception;
@@ -10,10 +10,6 @@ use SQLite3;
 use const SQLITE3_OPEN_CREATE;
 
 class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
-	public const INVENTORY_TYPE_NONE = -1;
-	public const INVENTORY_TYPE_CHEST = 0;
-	public const INVENTORY_TYPE_DOUBLE_CHEST = 1;
-
 	/** @var PluginBase */
 	private $plugin;
 	/** @var SQLite3*/
@@ -26,6 +22,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 	public function open() : void {
 		try {
 			$this->db = new SQLite3($this->plugin->getDataFolder() . "virtualinventory.db", SQLITE3_OPEN_CREATE);
+			$this->db->busyTimeout(1000);
 			$this->db->exec(
 			/** @lang SQLite */
 				//PHP7.3 ヒアドキュメント
@@ -34,8 +31,8 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 					inventory_id    INTEGER PRIMARY KEY AUTOINCREMENT,
 					inventory_type  INTEGER NOT NULL,
 					owner_id INTEGER NOT NULL,
-					FOREIGN KEY (owner_id) REFERENCES owners(owner_id),
-					FOREIGN KEY (inventory_type) REFERENCES inventory_types(inventory_type) 
+					FOREIGN KEY (owner_id) REFERENCES owners(owner_id) ON DELETE CASCADE,
+					FOREIGN KEY (inventory_type) REFERENCES inventory_types(inventory_type)
 				);
 
 				CREATE TABLE IF NOT EXISTS items(
@@ -46,7 +43,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 					damage  	 INTEGER NOT NULL,
 					nbt_b64 	 BLOB,
 					UNIQUE(inventory_id, slot),
-					FOREIGN KEY (inventory_id) REFERENCES inventories(inventory_id)
+					FOREIGN KEY (inventory_id) REFERENCES inventories(inventory_id) ON DELETE CASCADE
 				);
 				
 				CREATE TABLE IF NOT EXISTS inventory_types(
@@ -71,10 +68,8 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 				/** @lang SQLite */
 				<<<SQL_CREATE
 				INSERT INTO inventories(inventory_type, owner_id)
-				VALUES (
-						:type,
-						(SELECT owner_id FROM owners WHERE owner_name = :owner_name)
-				)
+				SELECT :type, owner_id FROM owners
+				WHERE owner_name = :owner_name
 				SQL_CREATE
 			);
 			$stmt->bindValue(':owner_name', strtolower($ownerName));
@@ -93,7 +88,6 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 				/** @SQLite */
 				<<<SQL_DELETE
 				DELETE FROM inventories WHERE inventory_id = :id;
-				DELETE FROM items WHERE inventory_id = :id
 				SQL_DELETE
 			);
 			$stmt->bindValue(':id', $id);
@@ -199,7 +193,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 	public function update(int $id, array $items) : void {
 		try {
 			$this->begin();
-			foreach($items as $slot => $item) {		//TODO	ループ中のクエリ発行をどうにかする
+			foreach($items as $slot => $item) {		// OPTIMIZE: ループ中のクエリ発行をどうにかする
 				$stmt = $this->db->prepare(
 				/** @lang SQLite */
 					<<<SQL_UPDATE

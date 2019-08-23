@@ -7,7 +7,7 @@ namespace uramnoil\virtualinventory\inventory\factory;
 use pocketmine\IPlayer;
 use uramnoil\virtualinventory\inventory\VirtualDoubleChestInventory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
-use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
+use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\VirtualInventoryRepository;
 
 class VirtualDoubleChestInventoryFactory implements VirtualInventoryFactory {
 	private $repository;

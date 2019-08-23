@@ -1,10 +1,10 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\dao\virtualinventory;
+namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory;
 
 
-use uramnoil\virtualinventory\repository\InventoryIds;
+use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\InventoryIds;
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
 
 interface VirtualInventoryDAO extends DAO {

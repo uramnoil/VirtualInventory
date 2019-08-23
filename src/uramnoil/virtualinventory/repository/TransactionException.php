@@ -1,11 +1,12 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\dao\virtualinventory;
+namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory;
 
 
 use RuntimeException;
+use uramnoil\virtualinventory\VirtualInventoryException;
 
-class TransactionException extends RuntimeException {
+class TransactionException extends VirtualInventoryException {
 
 }

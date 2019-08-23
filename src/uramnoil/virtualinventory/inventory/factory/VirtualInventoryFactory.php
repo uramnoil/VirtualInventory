@@ -6,7 +6,7 @@ namespace uramnoil\virtualinventory\inventory\factory;
 
 use pocketmine\IPlayer;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
-use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
+use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\VirtualInventoryRepository;
 
 interface VirtualInventoryFactory {
 	public function __construct(VirtualInventoryRepository $repository);

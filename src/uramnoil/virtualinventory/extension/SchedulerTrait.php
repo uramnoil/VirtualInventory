@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\extension;
+namespace uramnoil\virtualinventory\extension;
 
 
 use pocketmine\scheduler\AsyncTask;

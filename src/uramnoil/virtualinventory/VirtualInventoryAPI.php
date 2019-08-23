@@ -9,32 +9,42 @@ interface VirtualInventoryAPI {
 	/**
 	 * IDからVirtualChestInventory探します.
 	 *
-	 * @param int $id
-	 *
-	 * @return VirtualInventory
+	 * @param int      $id
+	 * @param callable $onDone
 	 */
-	public function findById(int $id) : VirtualInventory;
+	public function findById(int $id, callable $onDone) : void;
 
 	/**
 	 * プレイヤーが所有しているVirtualChestInventoryを配列で返します.
 	 *
-	 * @param IPlayer $owner
-	 *
-	 * @return VirtualInventory[]
+	 * @param IPlayer  $owner
+	 * @param callable $onDone
 	 */
-	public function findByOwner(IPlayer $owner) : array;
+	public function findByOwner(IPlayer $owner, callable $onDone) : void;
 
 	/**
 	 * VirtualChestInventoryを削除します.
 	 *
-	 * @param \uramnoil\virtualinventory\inventory\VirtualInventory $inventory
+	 * @param VirtualInventory $inventory
+	 * @param callable|null    $onDone
 	 */
-	public function delete(VirtualInventory $inventory) : void;
+	public function delete(VirtualInventory $inventory, ?callable $onDone) : void;
 
 	/**
-	 * @param \pocketmine\IPlayer $owner
+	 * @param IPlayer  $owner
+	 * @param int      $type
+	 * @param callable $onDone
 	 *
-	 * @return \uramnoil\virtualinventory\inventory\VirtualInventory
 	 */
-	public function new(IPlayer $owner) : VirtualInventory;
+	public function newInventory(IPlayer $owner, int $type, callable $onDone) : void;
+
+	/**
+	 * @param IPlayer $owner
+	 */
+	public function registerOwner(IPlayer $owner) : void;
+
+	/**
+	 * @param IPlayer $owner
+	 */
+	public function unregisterOwner(IPlayer $owner) : void;
 }

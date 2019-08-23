@@ -1,13 +1,12 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\dao\owner;
+namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\owner;
 
 
-use uramnoil\virtualinventory\repository\dao\virtualinventory\DAO;
+use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory\DAO;
 
 interface OwnerDAO extends DAO {
-
 	/**
 	 * @param string $name
 	 */

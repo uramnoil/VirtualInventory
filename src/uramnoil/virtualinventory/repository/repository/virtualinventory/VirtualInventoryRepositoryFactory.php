@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository;
+namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory;
 
 
 use uramnoil\virtualinventory\VirtualInventoryPlugin;

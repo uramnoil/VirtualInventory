@@ -8,7 +8,7 @@ use pocketmine\IPlayer;
 use pocketmine\Player;
 use uramnoil\virtualinventory\impersonator\Impersonator;
 use uramnoil\virtualinventory\impersonator\ChestImpersonator;
-use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
+use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\VirtualInventoryRepository;
 use function spl_object_hash;
 
 abstract class VirtualInventory extends BaseInventory {
