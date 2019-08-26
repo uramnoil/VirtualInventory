@@ -9,7 +9,7 @@ class RegisterOwnerListener extends VirtualInventoryListener implements Listener
 
 	/**
 	 * @ignoreCancel true
-	 * @priority	 HIGHEST
+	 * @priority	 MONITOR
 	 *
 	 * @param PlayerPreLoginEvent $event
 	 */
