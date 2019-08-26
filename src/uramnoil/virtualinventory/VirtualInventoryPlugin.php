@@ -77,6 +77,10 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 	}
 
 	public function delete(VirtualInventory $inventory, ?callable $onDone) : void {
+		if($this->isDisabled()) {
+			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
+		}
+
 		isset($onDone) ?
 			Utils::validateCallableSignature(function(?object $result) : void{}, $onDone)
 			: $onDone = function(?object $result) : void {};
@@ -107,6 +111,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
+
 		$onDone !== null ?
 			Utils::validateCallableSignature(function(object $noUse) : void{}, $onDone)
 			: $onDone = function(object $onUse) : void {};
@@ -123,10 +128,18 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
+
+		if($this->isDisabled()) {
+			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
+		}
 		$this->ownerRepository->new($owner);
 	}
 
 	public function unregisterOwner(IPlayer $owner) : void {
+		if($this->isDisabled()) {
+			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
+		}
+
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
