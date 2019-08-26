@@ -123,13 +123,13 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
-		// TODO: Implement registerOwner() method.
+		$this->ownerRepository->new($owner);
 	}
 
 	public function unregisterOwner(IPlayer $owner) : void {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
-		// TODO: Implement unregisterOwner() method.
+		$this->ownerRepository->delete($owner);
 	}
 }
