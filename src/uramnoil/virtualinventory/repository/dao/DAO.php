@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory;
+namespace uramnoil\virtualinventory\repository\dao;
 
 
 use pocketmine\plugin\PluginBase;

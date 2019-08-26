@@ -1,12 +1,10 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\owner;
+namespace uramnoil\virtualinventory\repository;
 
 use pocketmine\IPlayer;
 use pocketmine\plugin\PluginBase;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\owner\OwnerRepository;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\sqlite\dao\SQLiteOwnerDao;
 
 class SQLiteOwnerRepository implements OwnerRepository {
 	/** @var PluginBase */

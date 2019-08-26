@@ -10,10 +10,10 @@ use pocketmine\utils\Utils;
 use uramnoil\virtualinventory\extension\SchedulerTrait;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
 use uramnoil\virtualinventory\listener\RegisterOwnerListener;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\owner\OwnerRepository;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\owner\OwnerRepositoryFactory;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\VirtualInventoryRepository;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\VirtualInventoryRepositoryFactory;
+use uramnoil\virtualinventory\repository\OwnerRepository;
+use uramnoil\virtualinventory\repository\OwnerRepositoryFactory;
+use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
+use uramnoil\virtualinventory\repository\VirtualInventoryRepositoryFactory;
 use uramnoil\virtualinventory\task\TransactionTask;
 
 class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
@@ -86,7 +86,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 				throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 			}
 			$this->inventoryRepository->delete($inventory);
-		}, $onDone());
+		}, $onDone);
 
 		$this->submitTask($task);
 	}

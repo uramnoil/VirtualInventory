@@ -1,11 +1,10 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\owner;
+namespace uramnoil\virtualinventory\repository;
 
 
 use pocketmine\IPlayer;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\Repository;
 
 interface OwnerRepository extends Repository {
 	/**

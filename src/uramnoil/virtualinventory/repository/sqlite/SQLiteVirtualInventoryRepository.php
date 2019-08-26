@@ -1,23 +1,19 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory;
+namespace uramnoil\virtualinventory\repository;
 
 
 use Closure;
 use pocketmine\IPlayer;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
-use pocketmine\utils\Utils;
 use uramnoil\virtualinventory\inventory\factory\VirtualChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\VirtualDoubleChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory\SQLiteVirtualInventoryDAO;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory\VirtualInventoryDAO;
+use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
 use uramnoil\virtualinventory\extension\InventoryConverterTrait;
-use uramnoil\virtualinventory\extension\SchedulerTrait;
-use uramnoil\virtualinventory\task\TransactionTask;
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
 use function array_merge;
 

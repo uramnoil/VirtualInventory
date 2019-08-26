@@ -1,9 +1,8 @@
 <?php
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory;
+namespace uramnoil\virtualinventory\repository;
 
 use pocketmine\IPlayer;
-use pocketmine\plugin\PluginBase;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
 
 interface VirtualInventoryRepository extends Repository {

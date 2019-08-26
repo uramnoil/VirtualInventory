@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory;
+namespace uramnoil\virtualinventory\repository;
 
 
 use pocketmine\plugin\PluginBase;

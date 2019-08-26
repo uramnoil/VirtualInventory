@@ -1,12 +1,11 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\owner;
+namespace uramnoil\virtualinventory\repository;
 
 
 use pocketmine\plugin\PluginBase;
 use SQLite3;
-use uramnoil\virtualinventory\repository\sqlite\repository\owner\SQLiteOwnerRepository;
 
 class OwnerRepositoryFactory {
 	/** @var PluginBase */

@@ -1,10 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\owner;
-
-
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory\DAO;
+namespace uramnoil\virtualinventory\repository\dao;
 
 interface OwnerDAO extends DAO {
 	/**

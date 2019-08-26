@@ -1,12 +1,13 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory;
+namespace uramnoil\virtualinventory\repository;
 
 
 use Exception;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
+use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
 use const SQLITE3_OPEN_CREATE;
 
 class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
@@ -21,7 +22,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 
 	public function open() : void {
 		try {
-			$this->db = new SQLite3($this->plugin->getDataFolder() . "virtualinventory.db", SQLITE3_OPEN_CREATE);
+			$this->db = new SQLite3($this->plugin->getDataFolder() . "inventory.db", SQLITE3_OPEN_CREATE);
 			$this->db->busyTimeout(1000);
 			$this->db->exec(
 			/** @lang SQLite */

@@ -1,13 +1,13 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory;
+namespace uramnoil\virtualinventory\repository;
 
 
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
 
 class VirtualInventoryRepositoryFactory {
-	/** @var \uramnoil\virtualinventory\VirtualInventoryPlugin  */
+	/** @var VirtualInventoryPlugin  */
 	private $plugin;
 
 	public function __construct(VirtualInventoryPlugin $plugin) {

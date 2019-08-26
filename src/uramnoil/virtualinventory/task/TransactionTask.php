@@ -12,7 +12,7 @@ class TransactionTask extends AsyncTask {
 	/** @var Closure|null */
 	private $onDone;
 
-	public function __construct(Closure $async, Closure $onDone) {
+	public function __construct(Closure $async, callable $onDone) {
 		$this->async = $async;
 		$this->onDone = $onDone;
 	}

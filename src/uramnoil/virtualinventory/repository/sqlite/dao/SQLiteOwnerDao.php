@@ -1,14 +1,13 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\sqlite\dao;
+namespace uramnoil\virtualinventory\repository;
 
 
 use Exception;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\owner\OwnerDAO;
-use uramnoil\virtualinventory\repository\sqlite\repository\virtualinventory\dao\virtualinventory\TransactionException;
+use uramnoil\virtualinventory\repository\dao\OwnerDAO;
 use uramnoil\virtualinventory\extension\SchedulerTrait;
 use uramnoil\virtualinventory\task\TransactionTask;
 use function strtolower;
@@ -28,7 +27,7 @@ class SQLiteOwnerDao implements OwnerDAO {
 
 	public function open() : void {
 		try {
-			$this->db = new SQLite3($this->plugin->getDataFolder() . 'virtualinventory.db', SQLITE3_OPEN_CREATE);
+			$this->db = new SQLite3($this->plugin->getDataFolder() . 'inventory.db', SQLITE3_OPEN_CREATE);
 			$this->db->busyTimeout(1000);
 			$this->db->exec(
 				<<<SQL
@@ -63,12 +62,13 @@ class SQLiteOwnerDao implements OwnerDAO {
 		$task = new TransactionTask(function() use($name) : void {
 			$stmt = $this->db->prepare(
 				<<<SQL
-				
-
 				DELETE FROM owners WHERE owner_name = :owner_name;
 				SQL
 			);
+			$stmt->execute();
 		}, function(?object $noUse) : void {});
+
+		$this->submitTask($task);
 	}
 
 	public function exists(string $name) : void {
