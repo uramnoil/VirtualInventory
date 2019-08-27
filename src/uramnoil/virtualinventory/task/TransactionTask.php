@@ -19,15 +19,11 @@ class TransactionTask extends AsyncTask {
 
 	public function onRun() {
 		$async = $this->async;
-		if($this->onDone !== null) {
-			$this->setResult($async());
-		}
+		$this->setResult($async());
 	}
 
 	public function onCompletion(Server $server) {
-		if($this->onDone !== null) {
-			$onDone = $this->onDone;
-			$onDone($this->getResult());
-		}
+		$onDone = $this->onDone;
+		$onDone($this->getResult());
 	}
 }
