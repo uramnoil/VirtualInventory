@@ -16,6 +16,8 @@ interface OwnerDAO extends DAO {
 
 	/**
 	 * @param string $name
+	 *
+	 * @return bool
 	 */
-	public function exists(string $name) : void;
+	public function exists(string $name) : bool;
 }
