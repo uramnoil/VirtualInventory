@@ -5,7 +5,6 @@ namespace uramnoil\virtualinventory\repository\sqlite\dao;
 
 
 use Exception;
-use RuntimeException;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
@@ -25,7 +24,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 		try {
 			$this->db = new SQLite3($this->plugin->getDataFolder() . "virtualinventory.db");
 		} catch(Exception $exception) {
-			throw new RuntimeException($exception);
+			throw new DatabaseException($exception);
 		}
 
 		try {

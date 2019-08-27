@@ -25,7 +25,13 @@ class SQLiteOwnerDao implements OwnerDAO {
 	public function open() : void {
 		try {
 			$this->db = new SQLite3($this->plugin->getDataFolder() . 'inventory.db', SQLITE3_OPEN_CREATE);
-			$this->db->busyTimeout(1000);
+		} catch(Exception $exception) {
+			throw new DatabaseException($exception);
+		}
+
+		$this->db->busyTimeout(1000);
+
+		try {
 			$this->db->exec(
 				<<<SQL
 				CREATE TABLE IF NOT EXISTS owners(
