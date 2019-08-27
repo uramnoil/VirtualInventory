@@ -36,7 +36,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 					FOREIGN KEY (owner_id) REFERENCES owners(owner_id) ON DELETE CASCADE,
 					FOREIGN KEY (inventory_type) REFERENCES inventory_types(inventory_type)
 				);
-
+				
 				CREATE TABLE IF NOT EXISTS items(
 					inventory_id INTEGER PRIMARY KEY,
 					slot    	 INTEGER NOT NULL,
