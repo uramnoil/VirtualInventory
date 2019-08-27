@@ -8,11 +8,12 @@ use Exception;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
 use uramnoil\virtualinventory\repository\dao\OwnerDAO;
+use uramnoil\virtualinventory\repository\dao\Transactionable;
 use uramnoil\virtualinventory\repository\DatabaseException;
 use function strtolower;
 use const SQLITE3_OPEN_CREATE;
 
-class SQLiteOwnerDao implements OwnerDAO {
+class SQLiteOwnerDao implements OwnerDAO, Transactionable {
 	/** @var PluginBase  */
 	private $plugin;
 	/** @var SQLite3 */
@@ -78,5 +79,29 @@ class SQLiteOwnerDao implements OwnerDAO {
 		$count = $result->fetchArray();
 		assert($count['count'] = 1);
 		return $result === 1;
+	}
+
+	public function begin() : void {
+		$this->db->exec(
+			<<<SQL
+			BEGIN
+			SQL
+		);
+	}
+
+	public function commit() : void {
+		$this->db->exec(
+			<<<SQL
+			COMMIT
+			SQL
+		);
+	}
+
+	public function rollback() : void {
+		$this->db->exec(
+			<<<SQL
+			ROLLBACK
+			SQL
+		);
 	}
 }

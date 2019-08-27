@@ -7,10 +7,11 @@ namespace uramnoil\virtualinventory\repository\sqlite\dao;
 use Exception;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
+use uramnoil\virtualinventory\repository\dao\Transactionable;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
 use uramnoil\virtualinventory\repository\DatabaseException;
 
-class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
+class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable {
 	/** @var PluginBase */
 	private $plugin;
 	/** @var SQLite3*/
@@ -213,38 +214,27 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 		}
 	}
 
-	/**
-	 * トランザクションを開始します.
-	 */
 	public function begin() : void {
 		$this->db->exec(
-			/** @lang SQLite */
-			<<<SQL_BEGIN
+			<<<SQL
 			BEGIN
-			SQL_BEGIN);
-	}
-
-	/**
-	 * トランザクションをコミットさせます.
-	 */
-	public function commit() : void {
-		$this->db->exec(
-			/** @lang SQLite */
-			<<<SQL_COMMIT
-			COMMIT
-			SQL_COMMIT
+			SQL
 		);
 	}
 
-	/**
-	 * トランザクションをロールバックします.
-	 */
+	public function commit() : void {
+		$this->db->exec(
+			<<<SQL
+			COMMIT
+			SQL
+		);
+	}
+
 	public function rollback() : void {
 		$this->db->exec(
-			/** @lang SQLite */
-			<<<SQL_ROLLBACK
+			<<<SQL
 			ROLLBACK
-			SQL_ROLLBACK
+			SQL
 		);
 	}
 }
