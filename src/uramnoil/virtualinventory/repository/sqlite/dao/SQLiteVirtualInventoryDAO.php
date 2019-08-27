@@ -5,6 +5,7 @@ namespace uramnoil\virtualinventory\repository\sqlite\dao;
 
 
 use Exception;
+use RuntimeException;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
@@ -23,7 +24,12 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 
 	public function open() : void {
 		try {
-			$this->db = new SQLite3($this->plugin->getDataFolder() . "inventory.db", SQLITE3_OPEN_CREATE);
+			$this->db = new SQLite3($this->plugin->getDataFolder() . "virtualinventory.db", SQLITE3_OPEN_CREATE);
+		} catch(Exception $exception) {
+			throw new RuntimeException($exception);
+		}
+
+		try {
 			$this->db->busyTimeout(1000);
 			$this->db->exec(
 			/** @lang SQLite */
@@ -36,7 +42,6 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 					FOREIGN KEY (owner_id) REFERENCES owners(owner_id) ON DELETE CASCADE,
 					FOREIGN KEY (inventory_type) REFERENCES inventory_types(inventory_type)
 				);
-				
 				CREATE TABLE IF NOT EXISTS items(
 					inventory_id INTEGER PRIMARY KEY,
 					slot    	 INTEGER NOT NULL,
@@ -47,7 +52,6 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 					UNIQUE(inventory_id, slot),
 					FOREIGN KEY (inventory_id) REFERENCES inventories(inventory_id) ON DELETE CASCADE
 				);
-				
 				CREATE TABLE IF NOT EXISTS inventory_types(
 					inventory_type INTEGER PRIMARY KEY,
 					inventory_type_name TEXT NOT NULL UNIQUE
