@@ -8,14 +8,10 @@ use Exception;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
 use uramnoil\virtualinventory\repository\dao\OwnerDAO;
-use uramnoil\virtualinventory\extension\SchedulerTrait;
-use uramnoil\virtualinventory\task\TransactionTask;
 use function strtolower;
 use const SQLITE3_OPEN_CREATE;
 
 class SQLiteOwnerDao implements OwnerDAO {
-	use SchedulerTrait;
-
 	/** @var PluginBase  */
 	private $plugin;
 	/** @var SQLite3 */
@@ -46,32 +42,34 @@ class SQLiteOwnerDao implements OwnerDAO {
 	}
 
 	public function create(string $name) : void {
-		$task = new TransactionTask(function() use($name) : void{
-			$stmt = $this->db->prepare(
-				<<<SQL
-				INSERT INTO owners (owner_name) VALUES(:name)
-				SQL);
-			$stmt->bindValue(':name', strtolower($name));
-			$stmt->execute();
-		}, function(?object $noUse) : void {});
-
-		$this->submitTask($task);
+		$stmt = $this->db->prepare(
+			<<<SQL
+			INSERT INTO owners (owner_name) VALUES(:name)
+			SQL);
+		$stmt->bindValue(':name', strtolower($name));
+		$stmt->execute();
 	}
 
 	public function delete(string $name) : void {
-		$task = new TransactionTask(function() use($name) : void {
-			$stmt = $this->db->prepare(
-				<<<SQL
-				DELETE FROM owners WHERE owner_name = :owner_name;
-				SQL
-			);
-			$stmt->execute();
-		}, function(?object $noUse) : void {});
-
-		$this->submitTask($task);
+		$stmt = $this->db->prepare(
+			<<<SQL
+			DELETE FROM owners WHERE owner_name = :owner_name;
+			SQL
+		);
+		$stmt->bindValue(':owner_name', strtolower($name));
+		$stmt->execute();
 	}
 
-	public function exists(string $name) : void {
-		// TODO: Implement exists() method.
+	public function exists(string $name) : bool {
+		$stmt = $this->db->prepare(
+			<<<SQL
+			SELECT COUNT(*) AS count FROM owners WHERE owner_name = :name
+			SQL
+		);
+		$stmt->bindValue(':name', strtolower($name));
+		$result = $stmt->execute();
+		$count = $result->fetchArray();
+		assert($count['count'] = 1);
+		return $result === 1;
 	}
 }

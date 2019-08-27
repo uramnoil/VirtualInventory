@@ -5,8 +5,13 @@ namespace uramnoil\virtualinventory\repository;
 
 use pocketmine\IPlayer;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Utils;
+use uramnoil\virtualinventory\extension\SchedulerTrait;
+use uramnoil\virtualinventory\task\TransactionTask;
 
 class SQLiteOwnerRepository implements OwnerRepository {
+	use SchedulerTrait;
+
 	/** @var PluginBase */
 	private $plugin;
 	private $db;
@@ -24,11 +29,35 @@ class SQLiteOwnerRepository implements OwnerRepository {
 		$this->db->close();
 	}
 
-	public function new(IPlayer $player) : void {
-		$this->db->create($player->getName());
+	public function new(IPlayer $player, ?callable $onDone) : void {
+		Utils::validateCallableSignature(function(?object $noUse) : void {}, $onDone);
+
+		$task = new TransactionTask(function() use($player) : void{
+			$this->db->create($player->getName());
+		}, function(?object $noUse) : void {});
+
+		$this->submitTask($task);
 	}
 
-	public function delete(IPlayer $player) : void {
-		$this->db->delete($player->getName());
+	public function delete(IPlayer $player, ?callable $onDone) : void {
+		isset($onDone) ?
+			Utils::validateCallableSignature(function(?object $noUse) {}, $$onDone)
+			: $onDone = function(?object $noUse) {};
+
+		$task = new TransactionTask(function() use($player) : void {
+			$this->db->delete($player->getName());
+		}, function(?object $noUse) : void {});
+
+		$this->submitTask($task);
+	}
+
+	public function exists(IPlayer $player, callable $onDone) : void {
+		Utils::validateCallableSignature(function(bool $exists) : void {}, $onDone);
+
+		$task = new TransactionTask(function() use($player) : bool {
+			return $this->db->exists($player);
+		}, $onDone);
+
+		$this->submitTask($task);
 	}
 }
