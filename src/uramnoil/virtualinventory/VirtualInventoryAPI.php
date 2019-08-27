@@ -39,11 +39,17 @@ interface VirtualInventoryAPI {
 	public function newInventory(IPlayer $owner, int $type, callable $onDone) : void;
 
 	/**
+	 * プレイヤーをオーナーとして登録します.
+	 * 基本的にVirtualInventoryPluginで管理しているので,外部からの操作はなるべく控えてください.
+	 *
 	 * @param IPlayer $owner
 	 */
 	public function registerOwner(IPlayer $owner) : void;
 
 	/**
+	 * プレイヤーのオーナー登録を解除します.
+	 * 基本的にVirtualInventoryPluginで管理しているので,外部からの操作はなるべく控えてください.
+	 *
 	 * @param IPlayer $owner
 	 */
 	public function unregisterOwner(IPlayer $owner) : void;
