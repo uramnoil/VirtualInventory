@@ -1,12 +1,14 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository;
+namespace uramnoil\virtualinventory\repository\sqlite;
 
 use pocketmine\IPlayer;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Utils;
 use uramnoil\virtualinventory\extension\SchedulerTrait;
+use uramnoil\virtualinventory\repository\OwnerRepository;
+use uramnoil\virtualinventory\repository\sqlite\dao\SQLiteOwnerDao;
 use uramnoil\virtualinventory\task\TransactionTask;
 
 class SQLiteOwnerRepository implements OwnerRepository {

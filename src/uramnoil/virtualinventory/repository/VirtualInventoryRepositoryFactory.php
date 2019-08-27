@@ -4,6 +4,7 @@
 namespace uramnoil\virtualinventory\repository;
 
 
+use uramnoil\virtualinventory\repository\sqlite\SQLiteVirtualInventoryRepository;
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
 
 class VirtualInventoryRepositoryFactory {

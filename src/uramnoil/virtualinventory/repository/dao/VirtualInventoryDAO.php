@@ -3,10 +3,6 @@
 
 namespace uramnoil\virtualinventory\repository\dao;
 
-
-use uramnoil\virtualinventory\repository\InventoryIds;
-use uramnoil\virtualinventory\VirtualInventoryPlugin;
-
 interface VirtualInventoryDAO extends DAO {
 	public const OPTION_IDS_NOT_IN = 0;
 

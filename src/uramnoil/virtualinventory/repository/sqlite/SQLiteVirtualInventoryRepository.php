@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository;
+namespace uramnoil\virtualinventory\repository\sqlite;
 
 
 use Closure;
@@ -13,6 +13,9 @@ use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
 use uramnoil\virtualinventory\extension\InventoryConverterTrait;
+use uramnoil\virtualinventory\repository\InventoryIds;
+use uramnoil\virtualinventory\repository\sqlite\dao\SQLiteVirtualInventoryDAO;
+use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
 use uramnoil\virtualinventory\VirtualInventoryPlugin;
 use function array_merge;
 

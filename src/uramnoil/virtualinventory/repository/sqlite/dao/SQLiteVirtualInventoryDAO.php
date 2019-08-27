@@ -1,13 +1,14 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\repository;
+namespace uramnoil\virtualinventory\repository\sqlite\dao;
 
 
 use Exception;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
+use uramnoil\virtualinventory\repository\TransactionException;
 use const SQLITE3_OPEN_CREATE;
 
 class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {

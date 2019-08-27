@@ -124,7 +124,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		$this->submitTask($task);
 	}
 
-	public function registerOwner(IPlayer $owner) : void {
+	public function registerOwner(IPlayer $owner, ?callable $onDone) : void {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
@@ -132,10 +132,10 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
-		$this->ownerRepository->new($owner);
+		$this->ownerRepository->new($owner, $onDone);
 	}
 
-	public function unregisterOwner(IPlayer $owner) : void {
+	public function unregisterOwner(IPlayer $owner, ?callable $onDone) : void {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
@@ -143,6 +143,6 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
-		$this->ownerRepository->delete($owner);
+		$this->ownerRepository->delete($owner, $onDone);
 	}
 }

@@ -5,7 +5,7 @@ namespace uramnoil\virtualinventory\repository;
 
 
 use pocketmine\plugin\PluginBase;
-use SQLite3;
+use uramnoil\virtualinventory\repository\sqlite\SQLiteOwnerRepository;
 
 class OwnerRepositoryFactory {
 	/** @var PluginBase */
