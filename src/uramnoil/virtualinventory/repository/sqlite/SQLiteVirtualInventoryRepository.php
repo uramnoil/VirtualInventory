@@ -31,6 +31,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	public function __construct(PluginBase $plugin) {	// OPTIMIZE:	ファイルの保存場所さえ得られればいい
 		$this->plugin = $plugin;
 
+		$this->dao = new SQLiteVirtualInventoryDAO($plugin);
 		$this->factories[InventoryIds::INVENTORY_TYPE_CHEST]        = new VirtualChestInventoryFactory($this);
 		$this->factories[InventoryIds::INVENTORY_TYPE_DOUBLE_CHEST] = new VirtualDoubleChestInventoryFactory($this);
 	}
