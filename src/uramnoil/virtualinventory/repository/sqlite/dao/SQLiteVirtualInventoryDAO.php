@@ -27,8 +27,9 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			throw new DatabaseException($exception);
 		}
 
+		$this->db->busyTimeout(1000);
+
 		try {
-			$this->db->busyTimeout(1000);
 			$this->db->exec(
 			/** @lang SQLite */
 				//PHP7.3 ヒアドキュメント
@@ -67,7 +68,6 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 
 	public function create(string $ownerName, int $type) : array {
 		try {
-			$this->begin();
 			$stmt = $this->db->prepare(
 				/** @lang SQLite */
 				<<<SQL_CREATE
@@ -87,7 +87,6 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 
 	public function delete(int $id) : void {
 		try {
-			$this->begin();
 			$stmt = $this->db->prepare(
 				/** @SQLite */
 				<<<SQL_DELETE
@@ -96,9 +95,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			);
 			$stmt->bindValue(':id', $id);
 			$stmt->execute();
-			$this->commit();
 		} catch(Exception $exception) {
-			$this->rollback();
 			throw new DatabaseException($exception);
 		}
 	}
@@ -196,7 +193,6 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 
 	public function update(array $inventory) : void {
 		try {
-			$this->begin();
 			foreach($inventory['items'] as $slot => $item) {		// OPTIMIZE: ループ中のクエリ発行をどうにかする
 				$stmt = $this->db->prepare(
 				/** @lang SQLite */
@@ -212,9 +208,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 				$stmt->bindValue('inventory_id', $inventory['inventory_id']);
 				$stmt->execute();
 			}
-			$this->commit();
 		} catch(Exception $exception) {
-			$this->rollback();
 			throw new DatabaseException($exception);
 		}
 	}
@@ -222,7 +216,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 	/**
 	 * トランザクションを開始します.
 	 */
-	private function begin() : void {
+	public function begin() : void {
 		$this->db->exec(
 			/** @lang SQLite */
 			<<<SQL_BEGIN
@@ -233,7 +227,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 	/**
 	 * トランザクションをコミットさせます.
 	 */
-	private function commit() : void {
+	public function commit() : void {
 		$this->db->exec(
 			/** @lang SQLite */
 			<<<SQL_COMMIT
@@ -245,7 +239,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 	/**
 	 * トランザクションをロールバックします.
 	 */
-	private function rollback() : void {
+	public function rollback() : void {
 		$this->db->exec(
 			/** @lang SQLite */
 			<<<SQL_ROLLBACK

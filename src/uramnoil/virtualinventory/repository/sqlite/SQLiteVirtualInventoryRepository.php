@@ -12,6 +12,7 @@ use uramnoil\virtualinventory\inventory\factory\VirtualDoubleChestInventoryFacto
 use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
+use uramnoil\virtualinventory\repository\DatabaseException;
 use uramnoil\virtualinventory\repository\extension\InventoryConverterTrait;
 use uramnoil\virtualinventory\repository\InventoryIds;
 use uramnoil\virtualinventory\repository\sqlite\dao\SQLiteVirtualInventoryDAO;
@@ -28,7 +29,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	private $cachedInventories = [];
 	/** @var VirtualInventoryPlugin  */
 	private $plugin;
-	/** @var VirtualInventoryDAO */
+	/** @var SQLiteVirtualInventoryDAO */
 	private $dao;
 
 	public function __construct(PluginBase $plugin) {	// OPTIMIZE:	ファイルの保存場所さえ得られればいい
@@ -91,7 +92,14 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 	public function delete(VirtualInventory $inventory) : void {
-		$this->dao->delete($inventory->getId());
+		try {
+			$this->dao->begin();
+			$this->dao->delete($inventory->getId());
+			$this->dao->commit();
+		} catch(DatabaseException $exception) {
+			$this->dao->rollback();
+			throw $exception;
+		}
 		$inventory->onDelete();
 		unset($this->cachedInventories[$inventory->getId()]);
 	}
