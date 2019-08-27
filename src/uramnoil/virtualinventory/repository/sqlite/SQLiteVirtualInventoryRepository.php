@@ -7,7 +7,6 @@ namespace uramnoil\virtualinventory\repository;
 use Closure;
 use pocketmine\IPlayer;
 use pocketmine\plugin\PluginBase;
-use pocketmine\Server;
 use uramnoil\virtualinventory\inventory\factory\VirtualChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\VirtualDoubleChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
