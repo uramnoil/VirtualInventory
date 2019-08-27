@@ -170,8 +170,8 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			$stmt = $this->db->prepare(
 			/** @lang SQLite */
 			<<<SQL_FIND_BY_ID
-				SELECT * FROM items
-				WHERE inventory_id IN :array
+			SELECT * FROM items
+			WHERE inventory_id IN :array
 			SQL_FIND_BY_ID
 			);
 			$stmt->bindValue(':array', implode(', ', $inventoryIds));
