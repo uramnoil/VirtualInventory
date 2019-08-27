@@ -46,7 +46,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 	public function save(VirtualInventory $inventory) : void {
-		$this->dao->update($inventory->getId(), $this->itemsToRaw($inventory->getContents(true)));
+		$this->dao->update($this->inventoryToRaw($inventory));
 	}
 
 
@@ -69,12 +69,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$inventories = [];
 
 		foreach($inventoryRaws as $inventoryRaw) {
-			$inventory = $this->factories[$inventoryRaw['inventory_type']]
-				->createFrom(
-					$inventoryRaw['inventory_id'],
-					Server::getInstance()->getOfflinePlayer($inventoryRaw['owner_name'])
-				);
-			$inventory->setContents($this->rawToItems($inventoryRaw['items']));
+			$inventory = $this->rawToInventory($inventoryRaw);
 			$inventories[$inventory->getId()] = $inventory;
 		}
 
@@ -87,13 +82,9 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$inventoryRaw = $this->dao->findById($id);
 		if($inventoryRaw !== null) return null;
 
-		$inventory = $this->factories[$inventoryRaw['inventory_type']]
-			->createFrom(
-				$inventoryRaw['inventory_id'],
-				Server::getInstance()->getOfflinePlayer($inventoryRaw['owner_name'])
-			);
-		$inventory->setContents($this->rawToItems($inventoryRaw['items']));
-		return $inventory;
+		$inventory = $this->rawToInventory($inventoryRaw);
+
+		return $this->cachedInventories[$inventory->getId()] = $inventory;
 	}
 
 	public function delete(VirtualInventory $inventory) : void {

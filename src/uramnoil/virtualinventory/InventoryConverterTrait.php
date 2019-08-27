@@ -9,14 +9,13 @@ use pocketmine\Server;
 use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
 use function assert;
-use function strtolower;
 
 trait InventoryConverterTrait {
 	/** @var VirtualInventoryFactory[] */
 	private $factories = [];
 
 	/**
-	 * @param \uramnoil\virtualinventory\inventory\VirtualInventory $inventory
+	 * @param VirtualInventory $inventory
 	 *
 	 * @return array
 	 */
@@ -32,9 +31,9 @@ trait InventoryConverterTrait {
 	/**
 	 * @param array $inventoryRaw
 	 *
-	 * @return \uramnoil\virtualinventory\inventory\VirtualInventory
+	 * @return VirtualInventory
 	 */
-	public function RawToInventory(array $inventoryRaw) : VirtualInventory {
+	public function rawToInventory(array $inventoryRaw) : VirtualInventory {
 		$id = $inventoryRaw['inventory_id'];
 		$owner = Server::getInstance()->getOfflinePlayer($inventoryRaw['owner_name']);
 		$inventory = $this->factories[$inventoryRaw['inventory_type']]->createFrom($id, $owner);

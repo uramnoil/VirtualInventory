@@ -39,8 +39,7 @@ interface VirtualInventoryDAO extends DAO {
 	public function delete(int $id) : void;
 
 	/**
-	 * @param int   $id
-	 * @param array $items
+	 * @param array $inventoryRaw
 	 */
-	public function update(int $id, array $items) : void;
+	public function update(array $inventoryRaw) : void;
 }

@@ -191,10 +191,10 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 		return $inventoryRaws;
 	}
 
-	public function update(int $id, array $items) : void {
+	public function update(array $inventory) : void {
 		try {
 			$this->begin();
-			foreach($items as $slot => $item) {		// OPTIMIZE: ループ中のクエリ発行をどうにかする
+			foreach($inventory['items'] as $slot => $item) {		// OPTIMIZE: ループ中のクエリ発行をどうにかする
 				$stmt = $this->db->prepare(
 				/** @lang SQLite */
 					<<<SQL_UPDATE
@@ -206,7 +206,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 				$stmt->bindValue('count', $item['count']);
 				$stmt->bindValue('damage', $item['damage']);
 				$stmt->bindValue('nbt_b64', $item['nbt_64']);
-				$stmt->bindValue('inventory_id', $id);
+				$stmt->bindValue('inventory_id', $inventory['inventory_id']);
 				$stmt->execute();
 			}
 			$this->commit();
