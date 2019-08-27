@@ -12,7 +12,7 @@ use uramnoil\virtualinventory\inventory\factory\VirtualDoubleChestInventoryFacto
 use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
-use uramnoil\virtualinventory\extension\InventoryConverterTrait;
+use uramnoil\virtualinventory\repository\extension\InventoryConverterTrait;
 use uramnoil\virtualinventory\repository\InventoryIds;
 use uramnoil\virtualinventory\repository\sqlite\dao\SQLiteVirtualInventoryDAO;
 use uramnoil\virtualinventory\repository\VirtualInventoryRepository;

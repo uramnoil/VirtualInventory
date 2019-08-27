@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\extension;
+namespace uramnoil\virtualinventory\repository\extension;
 
 
 use pocketmine\item\Item;
