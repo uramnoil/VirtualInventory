@@ -217,7 +217,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 	}
 
 	/**
-	 * トランザクションを開始します/
+	 * トランザクションを開始します.
 	 */
 	private function begin() : void {
 		$this->db->exec(
