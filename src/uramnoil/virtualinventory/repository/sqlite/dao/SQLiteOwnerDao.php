@@ -8,7 +8,7 @@ use Exception;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
 use uramnoil\virtualinventory\repository\dao\OwnerDAO;
-use uramnoil\virtualinventory\repository\TransactionException;
+use uramnoil\virtualinventory\repository\DatabaseException;
 use function strtolower;
 use const SQLITE3_OPEN_CREATE;
 
@@ -34,7 +34,7 @@ class SQLiteOwnerDao implements OwnerDAO {
 				);
 				SQL);
 		} catch(Exception $exception) {
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 	}
 

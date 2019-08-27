@@ -12,6 +12,7 @@ use uramnoil\virtualinventory\inventory\VirtualInventory;
 use uramnoil\virtualinventory\listener\RegisterOwnerListener;
 use uramnoil\virtualinventory\repository\OwnerRepository;
 use uramnoil\virtualinventory\repository\OwnerRepositoryFactory;
+use uramnoil\virtualinventory\repository\DatabaseException;
 use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
 use uramnoil\virtualinventory\repository\VirtualInventoryRepositoryFactory;
 use uramnoil\virtualinventory\task\TransactionTask;
@@ -33,8 +34,12 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 	}
 
 	public function onEnable() {
-		$this->ownerRepository->open();
-		$this->inventoryRepository->open();
+		try {
+			$this->ownerRepository->open();
+			$this->inventoryRepository->open();
+		} catch(DatabaseException $exception) {
+
+		}
 
 		$this->getServer()->getPluginManager()->registerEvents(new RegisterOwnerListener($this), $this);
 	}

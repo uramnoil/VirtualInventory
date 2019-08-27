@@ -9,7 +9,7 @@ use RuntimeException;
 use pocketmine\plugin\PluginBase;
 use SQLite3;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
-use uramnoil\virtualinventory\repository\TransactionException;
+use uramnoil\virtualinventory\repository\DatabaseException;
 
 class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 	/** @var PluginBase */
@@ -58,7 +58,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 				SQL_CREATE_TABLE
 			);
 		} catch(Exception $exception) {
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 	}
 
@@ -80,7 +80,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			$stmt->bindValue(':owner_name', strtolower($ownerName));
 			$result = $stmt->execute();
 		} catch(Exception $exception) {
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 
 		return $result->fetchArray();
@@ -100,7 +100,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			$this->commit();
 		} catch(Exception $exception) {
 			$this->rollback();
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 	}
 
@@ -119,7 +119,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			$stmt->bindValue(':id', $id);
 			$inventoryResult = $stmt->execute();
 		} catch(Exception $exception) {
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 
 		$inventoryRaw = $inventoryResult->fetchArray();
@@ -135,7 +135,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			$stmt->bindValue(':id', $inventoryRaw['inventory_id']);
 			$itemsResult = $stmt->execute();
 		} catch(Exception $exception) {
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 
 		while($itemRaw = $itemsResult->fetchArray()) {
@@ -158,7 +158,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			$stmt->bindValue(':name', strtolower($name));
 			$inventoryResult = $stmt->execute();
 		} catch(Exception $exception) {
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 
 		$inventoryRaws = [];
@@ -180,7 +180,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			$stmt->bindValue(':array', implode(', ', $inventoryIds));
 			$itemsResult = $stmt->execute();
 		} catch(Exception $exception) {
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 
 		while($itemRaw = $itemsResult->fetchArray()) {
@@ -216,7 +216,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO {
 			$this->commit();
 		} catch(Exception $exception) {
 			$this->rollback();
-			throw new TransactionException($exception);
+			throw new DatabaseException($exception);
 		}
 	}
 
