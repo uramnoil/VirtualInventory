@@ -28,7 +28,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	/** @var VirtualInventoryDAO */
 	private $dao;
 
-	public function __construct(PluginBase $plugin) {	//OPTIMIZE	ファイルの保存場所さえ得られればいい
+	public function __construct(PluginBase $plugin) {	// OPTIMIZE:	ファイルの保存場所さえ得られればいい
 		$this->plugin = $plugin;
 
 		$this->factories[InventoryIds::INVENTORY_TYPE_CHEST]        = new VirtualChestInventoryFactory($this);
@@ -50,7 +50,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 
 
 	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : VirtualInventory {
-		$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType);	//OPTIMIZE	ルールが散らばってる
+		$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType);	// OPTIMIZE:	ルールが散らばってる
 		return $this->factories[$inventoryType]->createFrom($inventoryRaw['inventory_id'], $owner);
 	}
 
