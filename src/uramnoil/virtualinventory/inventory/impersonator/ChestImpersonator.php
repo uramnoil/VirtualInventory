@@ -1,6 +1,6 @@
 <?php
 
-namespace uramnoil\virtualinventory\impersonator;
+namespace uramnoil\virtualinventory\inventory\impersonator;
 
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockIds;

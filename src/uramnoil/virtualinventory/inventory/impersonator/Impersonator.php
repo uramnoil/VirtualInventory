@@ -1,7 +1,7 @@
 <?php
 
 
-namespace uramnoil\virtualinventory\impersonator;
+namespace uramnoil\virtualinventory\inventory\impersonator;
 
 use pocketmine\level\Position;
 use pocketmine\network\mcpe\protocol\ContainerOpenPacket;
