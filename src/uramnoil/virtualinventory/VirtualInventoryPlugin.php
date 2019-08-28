@@ -11,10 +11,8 @@ use uramnoil\virtualinventory\extension\SchedulerTrait;
 use uramnoil\virtualinventory\inventory\PerpetuatedVirtualInventory;
 use uramnoil\virtualinventory\listener\RegisterOwnerListener;
 use uramnoil\virtualinventory\repository\OwnerRepository;
-use uramnoil\virtualinventory\repository\OwnerRepositoryFactory;
-use uramnoil\virtualinventory\repository\DatabaseException;
+use uramnoil\virtualinventory\repository\RepositoryFactory;
 use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
-use uramnoil\virtualinventory\repository\VirtualInventoryRepositoryFactory;
 use uramnoil\virtualinventory\task\TransactionTask;
 
 class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
@@ -29,18 +27,12 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 
 	public function onLoad() {
 		$this->api = $this;
-		$this->ownerRepository = (new OwnerRepositoryFactory($this))->create();
-		$this->inventoryRepository = (new VirtualInventoryRepositoryFactory($this))->create();
+		$factory = new RepositoryFactory($this);
+		$this->ownerRepository = $factory->createVirtualInventoryRepository();
+		$this->inventoryRepository = $factory->createOwnerRepository();
 	}
 
 	public function onEnable() {
-		try {
-			$this->ownerRepository->open();
-			$this->inventoryRepository->open();
-		} catch(DatabaseException $exception) {
-			throw $exception;
-		}
-
 		$this->getServer()->getPluginManager()->registerEvents(new RegisterOwnerListener($this), $this);
 	}
 

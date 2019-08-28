@@ -5,35 +5,22 @@ namespace uramnoil\virtualinventory\repository\sqlite\dao;
 
 
 use Exception;
-use pocketmine\plugin\PluginBase;
 use SQLite3;
 use uramnoil\virtualinventory\repository\dao\Transactionable;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
 use uramnoil\virtualinventory\repository\DatabaseException;
 
 class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable {
-	/** @var PluginBase */
-	private $plugin;
 	/** @var SQLite3*/
 	private $db;
 
-	public function __construct(PluginBase $plugin) {
-		$this->plugin = $plugin;
-	}
-
-	public function open() : void {
-		try {
-			$this->db = new SQLite3($this->plugin->getDataFolder() . "virtualinventory.db");
-		} catch(Exception $exception) {
-			throw new DatabaseException($exception);
-		}
-
-		$this->db->busyTimeout(1000);
+	public function __construct(SQLite3 $db) {
+		$this->db = $db;
 
 		try {
 			$this->db->exec(
 			/** @lang SQLite */
-				//PHP7.3 ヒアドキュメント
+			//PHP7.3 ヒアドキュメント
 				<<<SQL_CREATE_TABLE
 				CREATE TABLE IF NOT EXISTS inventories(
 					inventory_id    INTEGER PRIMARY KEY AUTOINCREMENT,

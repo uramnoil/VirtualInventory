@@ -6,7 +6,7 @@ namespace uramnoil\virtualinventory\repository\sqlite;
 
 use Closure;
 use pocketmine\IPlayer;
-use pocketmine\plugin\PluginBase;
+use SQLite3;
 use uramnoil\virtualinventory\inventory\factory\PerpetuatedVirtualChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\PerpetuatedVirtualDoubleChestInventoryFactory;
 use uramnoil\virtualinventory\inventory\factory\PerpetuatedVirtualInventoryFactory;
@@ -32,17 +32,11 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	/** @var SQLiteVirtualInventoryDAO */
 	private $dao;
 
-	public function __construct(PluginBase $plugin) {	// OPTIMIZE:	ファイルの保存場所さえ得られればいい
-		$this->plugin = $plugin;
+	public function __construct(SQLite3 $db) {
 
-		$this->dao = new SQLiteVirtualInventoryDAO($plugin);
+		$this->dao = new SQLiteVirtualInventoryDAO($db);
 		$this->factories[InventoryIds::INVENTORY_TYPE_CHEST]        = new PerpetuatedVirtualChestInventoryFactory($this);
 		$this->factories[InventoryIds::INVENTORY_TYPE_DOUBLE_CHEST] = new PerpetuatedVirtualDoubleChestInventoryFactory($this);
-	}
-
-	public function open() : void {
-		$this->dao->open();
-
 	}
 
 	public function close() : void {
@@ -55,7 +49,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 
 
 	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : PerpetuatedVirtualInventory {
-		$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType);	// OPTIMIZE:	ルールが散らばってる
+		$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType);
 		return $this->factories[$inventoryType]->createFrom($inventoryRaw['inventory_id'], $owner);
 	}
 

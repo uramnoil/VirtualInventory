@@ -4,8 +4,8 @@
 namespace uramnoil\virtualinventory\repository\sqlite;
 
 use pocketmine\IPlayer;
-use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Utils;
+use SQLite3;
 use uramnoil\virtualinventory\extension\SchedulerTrait;
 use uramnoil\virtualinventory\repository\OwnerRepository;
 use uramnoil\virtualinventory\repository\sqlite\dao\SQLiteOwnerDao;
@@ -13,29 +13,22 @@ use uramnoil\virtualinventory\task\TransactionTask;
 
 class SQLiteOwnerRepository implements OwnerRepository {
 	use SchedulerTrait;
+	/** @var SQLiteOwnerDao */
+	private $dao;
 
-	/** @var PluginBase */
-	private $plugin;
-	private $db;
-
-	public function __construct(PluginBase $plugin) {
-		$this->plugin = $plugin;
-		$this->db = new SQLiteOwnerDao($plugin);
-	}
-
-	public function open() : void {
-		$this->db->open();
+	public function __construct(SQLite3 $db) {
+		$this->dao = new SQLiteOwnerDao($db);
 	}
 
 	public function close() : void {
-		$this->db->close();
+		$this->dao->close();
 	}
 
 	public function new(IPlayer $player, ?callable $onDone) : void {
 		Utils::validateCallableSignature(function(?object $noUse) : void {}, $onDone);
 
 		$task = new TransactionTask(function() use($player) : void{
-			$this->db->create($player->getName());
+			$this->dao->create($player->getName());
 		}, function(?object $noUse) : void {});
 
 		$this->submitTask($task);
@@ -47,7 +40,7 @@ class SQLiteOwnerRepository implements OwnerRepository {
 			: $onDone = function(?object $noUse) {};
 
 		$task = new TransactionTask(function() use($player) : void {
-			$this->db->delete($player->getName());
+			$this->dao->delete($player->getName());
 		}, function(?object $noUse) : void {});
 
 		$this->submitTask($task);
@@ -57,7 +50,7 @@ class SQLiteOwnerRepository implements OwnerRepository {
 		Utils::validateCallableSignature(function(bool $exists) : void {}, $onDone);
 
 		$task = new TransactionTask(function() use($player) : bool {
-			return $this->db->exists($player);
+			return $this->dao->exists($player);
 		}, $onDone);
 
 		$this->submitTask($task);
