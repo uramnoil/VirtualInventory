@@ -8,7 +8,7 @@ use pocketmine\IPlayer;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Utils;
 use uramnoil\virtualinventory\extension\SchedulerTrait;
-use uramnoil\virtualinventory\inventory\VirtualInventory;
+use uramnoil\virtualinventory\inventory\PerpetuatedVirtualInventory;
 use uramnoil\virtualinventory\listener\RegisterOwnerListener;
 use uramnoil\virtualinventory\repository\OwnerRepository;
 use uramnoil\virtualinventory\repository\OwnerRepositoryFactory;
@@ -38,7 +38,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 			$this->ownerRepository->open();
 			$this->inventoryRepository->open();
 		} catch(DatabaseException $exception) {
-
+			throw $exception;
 		}
 
 		$this->getServer()->getPluginManager()->registerEvents(new RegisterOwnerListener($this), $this);
@@ -58,9 +58,9 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
 
-		Utils::validateCallableSignature(function(?VirtualInventory $inventory) : void{}, $onDone);
+		Utils::validateCallableSignature(function(?PerpetuatedVirtualInventory $inventory) : void{}, $onDone);
 
-		$task = new TransactionTask(function() use($id) : ?VirtualInventory {
+		$task = new TransactionTask(function() use($id) : ?PerpetuatedVirtualInventory {
 			return $this->inventoryRepository->findById($id);
 		}, $onDone);
 
@@ -81,7 +81,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		$this->submitTask($task);
 	}
 
-	public function delete(VirtualInventory $inventory, ?callable $onDone) : void {
+	public function delete(PerpetuatedVirtualInventory $inventory, ?callable $onDone) : void {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
@@ -105,14 +105,14 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
 
-		$task = new TransactionTask(function() use ($owner, $type) : VirtualInventory {
+		$task = new TransactionTask(function() use ($owner, $type) : PerpetuatedVirtualInventory {
 			return $this->inventoryRepository->new($owner,$type);
-		}, $onDone ?? function(VirtualInventory $inventory) : void {});
+		}, $onDone ?? function(PerpetuatedVirtualInventory $inventory) : void {});
 
 		$this->submitTask($task);
 	}
 
-	public function save(VirtualInventory $inventory, callable $onDone) : void {
+	public function save(PerpetuatedVirtualInventory $inventory, callable $onDone) : void {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}

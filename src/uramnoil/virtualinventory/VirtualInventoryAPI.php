@@ -3,7 +3,7 @@
 namespace uramnoil\virtualinventory;
 
 use pocketmine\IPlayer;
-use uramnoil\virtualinventory\inventory\VirtualInventory;
+use uramnoil\virtualinventory\inventory\PerpetuatedVirtualInventory;
 
 interface VirtualInventoryAPI {
 	/**
@@ -25,10 +25,10 @@ interface VirtualInventoryAPI {
 	/**
 	 * VirtualChestInventoryを削除します.
 	 *
-	 * @param VirtualInventory $inventory
+	 * @param PerpetuatedVirtualInventory $inventory
 	 * @param callable|null    $onDone
 	 */
-	public function delete(VirtualInventory $inventory, ?callable $onDone) : void;
+	public function delete(PerpetuatedVirtualInventory $inventory, ?callable $onDone) : void;
 
 	/**
 	 * @param IPlayer  $owner
