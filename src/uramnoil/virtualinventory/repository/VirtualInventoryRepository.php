@@ -3,7 +3,7 @@
 namespace uramnoil\virtualinventory\repository;
 
 use pocketmine\IPlayer;
-use uramnoil\virtualinventory\inventory\VirtualInventory;
+use uramnoil\virtualinventory\inventory\PerpetuatedVirtualInventory;
 
 interface VirtualInventoryRepository extends Repository {
 	/**
@@ -11,9 +11,9 @@ interface VirtualInventoryRepository extends Repository {
 	 *
 	 * @param int 	  $id
 	 *
-	 * @return VirtualInventory
+	 * @return PerpetuatedVirtualInventory
 	 */
-	public function findById(int $id) : VirtualInventory;
+	public function findById(int $id) : PerpetuatedVirtualInventory;
 
 	/**
 	 * 所有者でVirtualChestInventoryを探します.
@@ -27,9 +27,9 @@ interface VirtualInventoryRepository extends Repository {
 	/**
 	 * VirtualChestInventoryをリポジトリから削除します.
 	 *
-	 * @param VirtualInventory $inventory
+	 * @param PerpetuatedVirtualInventory $inventory
 	 */
-	public function delete(VirtualInventory $inventory) : void;
+	public function delete(PerpetuatedVirtualInventory $inventory) : void;
 
 	/**
 	 * 新しいVirtualChestInventoryを作成します.
@@ -37,14 +37,14 @@ interface VirtualInventoryRepository extends Repository {
 	 * @param IPlayer $owner
 	 * @param int $inventoryType
 	 *
-	 * @return VirtualInventory
+	 * @return PerpetuatedVirtualInventory
 	 */
-	public function new(IPlayer $owner, int $inventoryType) : VirtualInventory;
+	public function new(IPlayer $owner, int $inventoryType) : PerpetuatedVirtualInventory;
 
 	/**
 	 * VirtualChestInventoryをセーブします.
 	 *
-	 * @param VirtualInventory $inventory
+	 * @param PerpetuatedVirtualInventory $inventory
 	 */
-	public function save(VirtualInventory $inventory) : void;
+	public function save(PerpetuatedVirtualInventory $inventory) : void;
 }

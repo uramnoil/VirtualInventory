@@ -9,7 +9,7 @@ use uramnoil\virtualinventory\inventory\PerpetuatedVirtualChestInventory;
 use uramnoil\virtualinventory\inventory\VirtualInventory;
 use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
 
-class VirtualChestInventoryFactory implements VirtualInventoryFactory {
+class PerpetuatedVirtualChestInventoryFactory implements VirtualInventoryFactory {
 	private $repository;
 
 	public function __construct(VirtualInventoryRepository $repository) {

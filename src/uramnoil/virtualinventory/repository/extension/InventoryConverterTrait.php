@@ -6,20 +6,20 @@ namespace uramnoil\virtualinventory\repository\extension;
 
 use pocketmine\item\Item;
 use pocketmine\Server;
-use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
-use uramnoil\virtualinventory\inventory\VirtualInventory;
+use uramnoil\virtualinventory\inventory\factory\PerpetuatedVirtualInventoryFactory;
+use uramnoil\virtualinventory\inventory\PerpetuatedVirtualInventory;
 use function assert;
 
 trait InventoryConverterTrait {
-	/** @var VirtualInventoryFactory[] */
+	/** @var PerpetuatedVirtualInventoryFactory[] */
 	private $factories = [];
 
 	/**
-	 * @param VirtualInventory $inventory
+	 * @param PerpetuatedVirtualInventory $inventory
 	 *
 	 * @return array
 	 */
-	public function inventoryToRaw(VirtualInventory $inventory) : array {
+	public function inventoryToRaw(PerpetuatedVirtualInventory $inventory) : array {
 		$inventoryRaw = [];
 
 		$inventoryRaw['inventory_id'] = $inventory->getId();
@@ -31,9 +31,9 @@ trait InventoryConverterTrait {
 	/**
 	 * @param array $inventoryRaw
 	 *
-	 * @return VirtualInventory
+	 * @return PerpetuatedVirtualInventory
 	 */
-	public function rawToInventory(array $inventoryRaw) : VirtualInventory {
+	public function rawToInventory(array $inventoryRaw) : PerpetuatedVirtualInventory {
 		$id = $inventoryRaw['inventory_id'];
 		$owner = Server::getInstance()->getOfflinePlayer($inventoryRaw['owner_name']);
 		$inventory = $this->factories[$inventoryRaw['inventory_type']]->createFrom($id, $owner);

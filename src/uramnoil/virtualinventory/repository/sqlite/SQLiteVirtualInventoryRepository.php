@@ -7,10 +7,10 @@ namespace uramnoil\virtualinventory\repository\sqlite;
 use Closure;
 use pocketmine\IPlayer;
 use pocketmine\plugin\PluginBase;
-use uramnoil\virtualinventory\inventory\factory\VirtualChestInventoryFactory;
-use uramnoil\virtualinventory\inventory\factory\VirtualDoubleChestInventoryFactory;
-use uramnoil\virtualinventory\inventory\factory\VirtualInventoryFactory;
-use uramnoil\virtualinventory\inventory\VirtualInventory;
+use uramnoil\virtualinventory\inventory\factory\PerpetuatedVirtualChestInventoryFactory;
+use uramnoil\virtualinventory\inventory\factory\PerpetuatedVirtualDoubleChestInventoryFactory;
+use uramnoil\virtualinventory\inventory\factory\PerpetuatedVirtualInventoryFactory;
+use uramnoil\virtualinventory\inventory\PerpetuatedVirtualInventory;
 use uramnoil\virtualinventory\repository\dao\VirtualInventoryDAO;
 use uramnoil\virtualinventory\repository\DatabaseException;
 use uramnoil\virtualinventory\repository\extension\InventoryConverterTrait;
@@ -23,9 +23,9 @@ use function array_merge;
 class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	use InventoryConverterTrait;
 
-	/** @var VirtualInventoryFactory[] */
+	/** @var PerpetuatedVirtualInventoryFactory[] */
 	private $factories = [];
-	/** @var VirtualInventory[] */
+	/** @var PerpetuatedVirtualInventory[] */
 	private $cachedInventories = [];
 	/** @var VirtualInventoryPlugin  */
 	private $plugin;
@@ -36,8 +36,8 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$this->plugin = $plugin;
 
 		$this->dao = new SQLiteVirtualInventoryDAO($plugin);
-		$this->factories[InventoryIds::INVENTORY_TYPE_CHEST]        = new VirtualChestInventoryFactory($this);
-		$this->factories[InventoryIds::INVENTORY_TYPE_DOUBLE_CHEST] = new VirtualDoubleChestInventoryFactory($this);
+		$this->factories[InventoryIds::INVENTORY_TYPE_CHEST]        = new PerpetuatedVirtualChestInventoryFactory($this);
+		$this->factories[InventoryIds::INVENTORY_TYPE_DOUBLE_CHEST] = new PerpetuatedVirtualDoubleChestInventoryFactory($this);
 	}
 
 	public function open() : void {
@@ -49,12 +49,12 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		$this->dao->close();
 	}
 
-	public function save(VirtualInventory $inventory) : void {
+	public function save(PerpetuatedVirtualInventory $inventory) : void {
 		$this->dao->update($this->inventoryToRaw($inventory));
 	}
 
 
-	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : VirtualInventory {
+	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : PerpetuatedVirtualInventory {
 		$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType);	// OPTIMIZE:	ルールが散らばってる
 		return $this->factories[$inventoryType]->createFrom($inventoryRaw['inventory_id'], $owner);
 	}
@@ -80,7 +80,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		return array_merge($cachedInventories, $inventories);
 	}
 
-	public function findById(int $id) : VirtualInventory{
+	public function findById(int $id) : PerpetuatedVirtualInventory{
 		if(isset($this->cachedInventories[$id])) return $this->cachedInventories[$id];
 
 		$inventoryRaw = $this->dao->findById($id);
@@ -91,7 +91,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		return $this->cachedInventories[$inventory->getId()] = $inventory;
 	}
 
-	public function delete(VirtualInventory $inventory) : void {
+	public function delete(PerpetuatedVirtualInventory $inventory) : void {
 		try {
 			$this->dao->begin();
 			$this->dao->delete($inventory->getId());
