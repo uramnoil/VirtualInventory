@@ -5,10 +5,10 @@ namespace uramnoil\virtualinventory\inventory;
 
 
 use pocketmine\Player;
-use uramnoil\virtualinventory\impersonator\Impersonator;
-use uramnoil\virtualinventory\impersonator\DoubleChestImpersonator;
+use uramnoil\virtualinventory\inventory\impersonator\Impersonator;
+use uramnoil\virtualinventory\inventory\impersonator\DoubleChestImpersonator;
 
-class VirtualDoubleChestInventory extends VirtualInventory {
+class PerpetuatedVirtualDoubleChestInventory extends PerpetuatedVirtualInventory {
 	public function getName() : string {
 		return "Virtual Double Chest Inventory";
 	}

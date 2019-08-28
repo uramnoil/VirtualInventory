@@ -4,55 +4,14 @@
 namespace uramnoil\virtualinventory\inventory;
 
 use pocketmine\inventory\BaseInventory;
-use pocketmine\IPlayer;
 use pocketmine\Player;
-use uramnoil\virtualinventory\impersonator\Impersonator;
-use uramnoil\virtualinventory\impersonator\ChestImpersonator;
-use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
+use uramnoil\virtualinventory\inventory\impersonator\Impersonator;
+use uramnoil\virtualinventory\inventory\impersonator\ChestImpersonator;
 use function spl_object_hash;
 
 abstract class VirtualInventory extends BaseInventory {
-	/** @var VirtualInventoryRepository */
-	private $repository;
 	/** @var ChestImpersonator[] */
 	private $impersonators = [];
-
-	/** @var int */
-	protected $id;
-	/** @var IPlayer */
-	protected $owner;
-
-	/**
-	 * VirtualChestInventory constructor.
-	 *
-	 * @param VirtualInventoryRepository $repository
-	 * @param int                                                              $id
-	 * @param IPlayer                                              $owner
-	 * @param array                                                            $items
-	 * @param int|null                                                         $size
-	 * @param string|null                                                      $title
-	 */
-	public function __construct(VirtualInventoryRepository $repository, int $id, IPlayer $owner, $items = [], int $size = null, string $title = null) {
-		parent::__construct($items, $size, $title);
-		$this->repository = $repository;
-		$this->id = $id;
-		$this->owner = $owner;
-	}
-
-	/**
-	 * @return int
-	 */
-	public final function getId() : int {
-		return $this->id;
-	}
-
-	/**
-	 * @return \pocketmine\IPlayer
-	 */
-	public final function getOwner() : IPlayer {
-		return $this->owner;
-	}
-
 
 	/**
 	 * VirtualChestInventoryが削除されたとき.
