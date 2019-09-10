@@ -10,7 +10,7 @@ class TransactionTask extends AsyncTask {
 	/** @var Closure */
 	private $async;
 	/** @var Closure|null */
-	private $onDone;
+	protected $onDone;
 
 	public function __construct(Closure $async, callable $onDone) {
 		$this->async = $async;
@@ -24,6 +24,6 @@ class TransactionTask extends AsyncTask {
 
 	public function onCompletion(Server $server) {
 		$onDone = $this->onDone;
-		$onDone($this->getResult());
+		$onDone();
 	}
 }

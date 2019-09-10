@@ -33,10 +33,11 @@ interface VirtualInventoryAPI {
 	/**
 	 * @param IPlayer  $owner
 	 * @param int      $type
+     * @param string   $title
 	 * @param callable $onDone
 	 *
 	 */
-	public function newInventory(IPlayer $owner, int $type, callable $onDone) : void;
+	public function new(IPlayer $owner, int $type, string $title, callable $onDone) : void;
 
 	/**
 	 * プレイヤーをオーナーとして登録します.

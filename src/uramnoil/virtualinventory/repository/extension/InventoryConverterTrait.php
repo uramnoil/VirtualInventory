@@ -15,7 +15,7 @@ trait InventoryConverterTrait {
 	private $factories = [];
 
 	/**
-	 * @param PerpetuatedVirtualInventory $inventory
+	 * @param  PerpetuatedVirtualInventory  $inventory
 	 *
 	 * @return array
 	 */
@@ -23,37 +23,39 @@ trait InventoryConverterTrait {
 		$inventoryRaw = [];
 
 		$inventoryRaw['inventory_id'] = $inventory->getId();
+		$inventoryRaw['inventory_titel'] = $inventory->getTitle();
 		$inventoryRaw['items'] = $this->itemsToRaw($inventory->getContents(true));
 
 		return $inventoryRaw;
 	}
 
 	/**
-	 * @param array $inventoryRaw
+	 * @param  array  $inventoryRaw
 	 *
 	 * @return PerpetuatedVirtualInventory
 	 */
 	public function rawToInventory(array $inventoryRaw) : PerpetuatedVirtualInventory {
 		$id = $inventoryRaw['inventory_id'];
+		$title = $inventoryRaw['inventory_title'];
 		$owner = Server::getInstance()->getOfflinePlayer($inventoryRaw['owner_name']);
-		$inventory = $this->factories[$inventoryRaw['inventory_type']]->createFrom($id, $owner);
+		$inventory = $this->factories[$inventoryRaw['inventory_type']]->createFrom($id, $owner, $title);
 		$inventory->setContents($this->rawToItems($inventoryRaw['items']));
 		return $inventory;
 	}
 
 	/**
-	 * @param array $items
+	 * @param  array  $items
 	 *
 	 * @return array
 	 */
 	public function itemsToRaw(array $items) : array {
-		foreach($items as $item) {
+		foreach ($items as $item) {
 			assert($item instanceof Item);
 		}
 
 		$raw = [];
 
-		foreach($items as $slot => $item) {
+		foreach ($items as $slot => $item) {
 			$raw[$slot] = $item->jsonSerialize();
 		}
 
@@ -61,13 +63,13 @@ trait InventoryConverterTrait {
 	}
 
 	/**
-	 * @param array $raw
+	 * @param  array  $raw
 	 *
 	 * @return Item[]
 	 */
 	public function rawToItems(array $raw) : array {
 		$items = [];
-		foreach($raw as $slot => $rawItem) {
+		foreach ($raw as $slot => $rawItem) {
 			$items[$slot] = Item::jsonDeserialize($rawItem);
 		}
 

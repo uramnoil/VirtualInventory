@@ -17,6 +17,10 @@ class RepositoryFactory {
 		$this->db = new SQLite3($plugin->getDataFolder() . '/virtualinventory.db');
 	}
 
+	public function close() : void {
+	    $this->db->close();
+    }
+
 	public function createVirtualInventoryRepository() : VirtualInventoryRepository {
 		return new SQLiteVirtualInventoryRepository($this->db);
 	}
@@ -27,5 +31,4 @@ class RepositoryFactory {
 	public function createOwnerRepository() : OwnerRepository {
 		return new SQLiteOwnerRepository($this->db);
 	}
-
 }

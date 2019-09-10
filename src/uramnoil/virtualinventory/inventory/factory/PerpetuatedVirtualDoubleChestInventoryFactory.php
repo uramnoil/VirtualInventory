@@ -16,7 +16,7 @@ class PerpetuatedVirtualDoubleChestInventoryFactory implements VirtualInventoryF
 		$this->repository = $repository;
 	}
 
-	public function createFrom(int $id, IPlayer $owner) : VirtualInventory {
-		return new PerpetuatedVirtualDoubleChestInventory($this->repository, $id, $owner);
+	public function createFrom(int $id, IPlayer $owner, string $title) : VirtualInventory {
+		return new PerpetuatedVirtualDoubleChestInventory($this->repository, $id, $owner, $title);
 	}
 }

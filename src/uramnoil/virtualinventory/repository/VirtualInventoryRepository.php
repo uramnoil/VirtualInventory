@@ -9,7 +9,7 @@ interface VirtualInventoryRepository extends Repository {
 	/**
 	 * IDでVirtualChestInventoryを探します.
 	 *
-	 * @param int 	  $id
+	 * @param  int  $id
 	 *
 	 * @return PerpetuatedVirtualInventory
 	 */
@@ -18,7 +18,7 @@ interface VirtualInventoryRepository extends Repository {
 	/**
 	 * 所有者でVirtualChestInventoryを探します.
 	 *
-	 * @param IPlayer $owner
+	 * @param  IPlayer  $owner
 	 *
 	 * @return array
 	 */
@@ -27,24 +27,25 @@ interface VirtualInventoryRepository extends Repository {
 	/**
 	 * VirtualChestInventoryをリポジトリから削除します.
 	 *
-	 * @param PerpetuatedVirtualInventory $inventory
+	 * @param  PerpetuatedVirtualInventory  $inventory
 	 */
 	public function delete(PerpetuatedVirtualInventory $inventory) : void;
 
 	/**
 	 * 新しいVirtualChestInventoryを作成します.
 	 *
-	 * @param IPlayer $owner
-	 * @param int $inventoryType
+	 * @param  IPlayer  $owner
+	 * @param  int  $inventoryType
+	 * @param  string  $title
 	 *
 	 * @return PerpetuatedVirtualInventory
 	 */
-	public function new(IPlayer $owner, int $inventoryType) : PerpetuatedVirtualInventory;
+	public function new(IPlayer $owner, int $inventoryType, string $title) : PerpetuatedVirtualInventory;
 
 	/**
 	 * VirtualChestInventoryをセーブします.
 	 *
-	 * @param PerpetuatedVirtualInventory $inventory
+	 * @param  PerpetuatedVirtualInventory  $inventory
 	 */
 	public function save(PerpetuatedVirtualInventory $inventory) : void;
 }

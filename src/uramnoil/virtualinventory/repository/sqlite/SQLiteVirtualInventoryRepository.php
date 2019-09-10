@@ -4,7 +4,6 @@
 namespace uramnoil\virtualinventory\repository\sqlite;
 
 
-use Closure;
 use pocketmine\IPlayer;
 use SQLite3;
 use uramnoil\virtualinventory\inventory\factory\PerpetuatedVirtualChestInventoryFactory;
@@ -27,7 +26,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	private $factories = [];
 	/** @var PerpetuatedVirtualInventory[] */
 	private $cachedInventories = [];
-	/** @var VirtualInventoryPlugin  */
+	/** @var VirtualInventoryPlugin */
 	private $plugin;
 	/** @var SQLiteVirtualInventoryDAO */
 	private $dao;
@@ -35,12 +34,8 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	public function __construct(SQLite3 $db) {
 
 		$this->dao = new SQLiteVirtualInventoryDAO($db);
-		$this->factories[InventoryIds::INVENTORY_TYPE_CHEST]        = new PerpetuatedVirtualChestInventoryFactory($this);
+		$this->factories[InventoryIds::INVENTORY_TYPE_CHEST] = new PerpetuatedVirtualChestInventoryFactory($this);
 		$this->factories[InventoryIds::INVENTORY_TYPE_DOUBLE_CHEST] = new PerpetuatedVirtualDoubleChestInventoryFactory($this);
-	}
-
-	public function close() : void {
-		$this->dao->close();
 	}
 
 	public function save(PerpetuatedVirtualInventory $inventory) : void {
@@ -48,16 +43,16 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 	}
 
 
-	public function new(IPlayer $owner, int $inventoryType = InventoryIds::INVENTORY_TYPE_CHEST, ?Closure $onDone = null) : PerpetuatedVirtualInventory {
-		$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType);
-		return $this->factories[$inventoryType]->createFrom($inventoryRaw['inventory_id'], $owner);
+	public function new(IPlayer $owner, int $inventoryType, string $title) : PerpetuatedVirtualInventory {
+		$inventoryRaw = $this->dao->create($owner->getName(), $inventoryType, $title);
+		return $this->factories[$inventoryType]->createFrom($inventoryRaw['inventory_id'], $owner, $title);
 	}
 
-	public function findByOwner(IPlayer $owner) : array{
+	public function findByOwner(IPlayer $owner) : array {
 		$idsNotIn = [];
 		$cachedInventories = [];
-		foreach($this->cachedInventories as $inventory) {
-			if($inventory->getOwner()->getName() === $owner->getName()) {
+		foreach ($this->cachedInventories as $inventory) {
+			if ($inventory->getOwner()->getName() === $owner->getName()) {
 				$cachedInventories[$inventory->getId()] = $inventory;
 				$idsNotIn[$inventory->getId()] = $inventory;
 			}
@@ -66,7 +61,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 
 		$inventories = [];
 
-		foreach($inventoryRaws as $inventoryRaw) {
+		foreach ($inventoryRaws as $inventoryRaw) {
 			$inventory = $this->rawToInventory($inventoryRaw);
 			$inventories[$inventory->getId()] = $inventory;
 		}
@@ -74,11 +69,11 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 		return array_merge($cachedInventories, $inventories);
 	}
 
-	public function findById(int $id) : PerpetuatedVirtualInventory{
-		if(isset($this->cachedInventories[$id])) return $this->cachedInventories[$id];
+	public function findById(int $id) : PerpetuatedVirtualInventory {
+		if (isset($this->cachedInventories[$id])) return $this->cachedInventories[$id];
 
 		$inventoryRaw = $this->dao->findById($id);
-		if($inventoryRaw !== null) return null;
+		if ($inventoryRaw !== null) return null;
 
 		$inventory = $this->rawToInventory($inventoryRaw);
 
@@ -90,7 +85,7 @@ class SQLiteVirtualInventoryRepository implements VirtualInventoryRepository {
 			$this->dao->begin();
 			$this->dao->delete($inventory->getId());
 			$this->dao->commit();
-		} catch(DatabaseException $exception) {
+		} catch (DatabaseException $exception) {
 			$this->dao->rollback();
 			throw $exception;
 		}

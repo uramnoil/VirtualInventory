@@ -8,5 +8,5 @@ use pocketmine\IPlayer;
 use uramnoil\virtualinventory\inventory\PerpetuatedVirtualInventory;
 
 interface PerpetuatedVirtualInventoryFactory {
-	public function createFrom(int $id, IPlayer $owner) : PerpetuatedVirtualInventory;
+	public function createFrom(int $id, IPlayer $owner, string $title) : PerpetuatedVirtualInventory;
 }

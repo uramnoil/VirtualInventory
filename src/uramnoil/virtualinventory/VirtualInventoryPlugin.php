@@ -14,12 +14,15 @@ use uramnoil\virtualinventory\repository\OwnerRepository;
 use uramnoil\virtualinventory\repository\RepositoryFactory;
 use uramnoil\virtualinventory\repository\VirtualInventoryRepository;
 use uramnoil\virtualinventory\task\TransactionTask;
+use uramnoil\virtualinventory\task\TransactionWithResultTask;
 
 class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 	use SchedulerTrait;
 
 	/** @var VirtualInventoryAPI */
 	private $api;
+	/** @var RepositoryFactory */
+	private $factory;
 	/** @var OwnerRepository */
 	private $ownerRepository;
 	/** @var VirtualInventoryRepository */
@@ -37,8 +40,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 	}
 
 	public function onDisable() {
-		$this->ownerRepository->close();
-		$this->inventoryRepository->close();
+	    $this->factory->close();
 	}
 
 	public function getAPI() : VirtualInventoryAPI {
@@ -52,7 +54,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 
 		Utils::validateCallableSignature(function(?PerpetuatedVirtualInventory $inventory) : void{}, $onDone);
 
-		$task = new TransactionTask(function() use($id) : ?PerpetuatedVirtualInventory {
+		$task = new TransactionWithResultTask(function() use($id) : ?PerpetuatedVirtualInventory {
 			return $this->inventoryRepository->findById($id);
 		}, $onDone);
 
@@ -66,7 +68,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 
 		Utils::validateCallableSignature(function(array $inventories) : void{}, $onDone);
 
-		$task = new TransactionTask(function() use($owner) : array {
+		$task = new TransactionWithResultTask(function() use($owner) : array {
 			return $this->inventoryRepository->findByOwner($owner);
 		}, $onDone);
 
@@ -92,13 +94,13 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		$this->submitTask($task);
 	}
 
-	public function newInventory(IPlayer $owner, int $type, callable $onDone) : void {
+	public function new(IPlayer $owner, int $type, string $title, callable $onDone) : void {
 		if($this->isDisabled()) {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
 
-		$task = new TransactionTask(function() use ($owner, $type) : PerpetuatedVirtualInventory {
-			return $this->inventoryRepository->new($owner,$type);
+		$task = new TransactionTask(function() use ($owner, $type, $title) : PerpetuatedVirtualInventory {
+			return $this->inventoryRepository->new($owner, $type, $title);
 		}, $onDone ?? function(PerpetuatedVirtualInventory $inventory) : void {});
 
 		$this->submitTask($task);
@@ -110,12 +112,11 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		}
 
 		$onDone !== null ?
-			Utils::validateCallableSignature(function(object $noUse) : void{}, $onDone)
+			Utils::validateCallableSignature(function() : void{}, $onDone)
 			: $onDone = function(object $onUse) : void {};
 
-		$task = new TransactionTask(function() use ($inventory) : ?object {
+		$task = new TransactionTask(function() use ($inventory) : void {
 			$this->inventoryRepository->save($inventory);
-			return null;
 		}, $onDone);
 
 		$this->submitTask($task);
