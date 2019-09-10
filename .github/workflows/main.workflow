@@ -1,8 +1,8 @@
 workflow "Lint Workflow" {
-  on = "push"
   resolves = [
-    "lint"
+    "lint",
   ]
+  on = "commit_comment"
 }
 
 action "lint" {
