@@ -23,7 +23,7 @@ trait InventoryConverterTrait {
 		$inventoryRaw = [];
 
 		$inventoryRaw['inventory_id'] = $inventory->getId();
-		$inventoryRaw['inventory_titel'] = $inventory->getTitle();
+		$inventoryRaw['inventory_title'] = $inventory->getTitle();
 		$inventoryRaw['items'] = $this->itemsToRaw($inventory->getContents(true));
 
 		return $inventoryRaw;
@@ -49,13 +49,13 @@ trait InventoryConverterTrait {
 	 * @return array
 	 */
 	public function itemsToRaw(array $items) : array {
-		foreach ($items as $item) {
+		foreach($items as $item) {
 			assert($item instanceof Item);
 		}
 
 		$raw = [];
 
-		foreach ($items as $slot => $item) {
+		foreach($items as $slot => $item) {
 			$raw[$slot] = $item->jsonSerialize();
 		}
 
@@ -69,7 +69,7 @@ trait InventoryConverterTrait {
 	 */
 	public function rawToItems(array $raw) : array {
 		$items = [];
-		foreach ($raw as $slot => $rawItem) {
+		foreach($raw as $slot => $rawItem) {
 			$items[$slot] = Item::jsonDeserialize($rawItem);
 		}
 
