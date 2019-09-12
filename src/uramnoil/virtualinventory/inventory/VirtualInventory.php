@@ -21,7 +21,7 @@ abstract class VirtualInventory extends BaseInventory {
 	}
 
 	public function onOpen(Player $who) : void {
-		parent::onClose($who);
+		parent::onOpen($who);
 		$this->impersonators[spl_object_hash($who)] = $this->createImpersonatorFrom($who);
 		$this->impersonators[spl_object_hash($who)]->impersonate();
 	}
