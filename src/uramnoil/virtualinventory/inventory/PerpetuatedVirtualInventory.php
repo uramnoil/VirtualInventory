@@ -35,4 +35,8 @@ abstract class PerpetuatedVirtualInventory extends VirtualInventory {
 	public final function getOwner() : IPlayer {
 		return $this->owner;
 	}
+
+	public function setTitle(string $title) {
+		$this->title = $title;
+	}
 }
