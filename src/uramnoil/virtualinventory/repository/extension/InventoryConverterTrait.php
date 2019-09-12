@@ -47,6 +47,8 @@ trait InventoryConverterTrait {
 	 * @param  array  $items
 	 *
 	 * @return array
+	 *
+	 * @see https://github.com/pmmp/PocketMine-MP/blob/a19143cae76ad55f1bdc2f39ad007b1fc170980b/src/pocketmine/item/Item.php#L884
 	 */
 	public function itemsToRaw(array $items) : array {
 		foreach($items as $item) {
