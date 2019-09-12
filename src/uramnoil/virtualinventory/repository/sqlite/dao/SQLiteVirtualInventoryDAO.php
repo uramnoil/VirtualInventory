@@ -48,7 +48,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 				)
 				SQL
 			);
-		} catch (Exception $exception) {
+		} catch(Exception $exception) {
 			throw new DatabaseException($exception);
 		}
 	}
@@ -66,7 +66,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 			$stmt->bindValue(':inventory_title', $title);
 			$stmt->bindValue(':owner_name', strtolower($ownerName));
 			$result = $stmt->execute();
-		} catch (Exception $exception) {
+		} catch(Exception $exception) {
 			throw new DatabaseException($exception);
 		}
 
@@ -78,12 +78,12 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 			$stmt = $this->db->prepare(
 			/** @SQLite */
 				<<<SQL
-				DELETE FROM inventories WHERE inventory_id = :id;
+				DELETE FROM inventories WHERE inventory_id = :inventory_id;
 				SQL
 			);
-			$stmt->bindValue(':id', $id);
+			$stmt->bindValue(':inventory_id', $id);
 			$stmt->execute();
-		} catch (Exception $exception) {
+		} catch(Exception $exception) {
 			throw new DatabaseException($exception);
 		}
 	}
@@ -97,12 +97,12 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 				<<<SQL
 				SELECT * FROM inventories 
 					NATURAL INNER JOIN owners
-				WHERE inventory_id = :id
+				WHERE inventory_id = :inventory_id
 				SQL
 			);
-			$stmt->bindValue(':id', $id);
+			$stmt->bindValue(':inventory_id', $id);
 			$inventoryResult = $stmt->execute();
-		} catch (Exception $exception) {
+		} catch(Exception $exception) {
 			throw new DatabaseException($exception);
 		}
 
@@ -113,16 +113,16 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 			/** @lang SQLite */
 				<<<SQL
 				SELECT * FROM items
-				WHERE inventory_id = :id
+				WHERE inventory_id = :inventory_id
 				SQL
 			);
-			$stmt->bindValue(':id', $inventoryRaw['inventory_id']);
+			$stmt->bindValue(':inventory_id', $inventoryRaw['inventory_id']);
 			$itemsResult = $stmt->execute();
-		} catch (Exception $exception) {
+		} catch(Exception $exception) {
 			throw new DatabaseException($exception);
 		}
 
-		while ($itemRaw = $itemsResult->fetchArray()) {
+		while($itemRaw = $itemsResult->fetchArray()) {
 			$inventoryRaw['items'][$itemRaw['slot']] = $itemRaw;
 		}
 
@@ -132,7 +132,7 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 	public function findByOwner(string $name, array $option = []) : array {
 		try {
 			$stmt = null;
-			if (empty($option[self::OPTION_IDS_NOT_IN])) {
+			if(empty($option[self::OPTION_IDS_NOT_IN])) {
 				$stmt = $this->db->prepare(
 				/** @lang SQLite */
 					<<<SQL
@@ -148,22 +148,22 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 					SELECT * FROM inventories
 						NATURAL INNER JOIN owners
 					WHERE
-						owner_name = :name AND
+						owner_name = :owner_name AND
 						inventory_id NOT IN(:ids)
 					SQL
 				);
 				$stmt->bindValue(':ids', implode(',', $option[self::OPTION_IDS_NOT_IN]));
 			}
-			$stmt->bindValue(':name', strtolower($name));
+			$stmt->bindValue(':owner_name', strtolower($name));
 			$inventoryResult = $stmt->execute();
-		} catch (Exception $exception) {
+		} catch(Exception $exception) {
 			throw new DatabaseException($exception);
 		}
 
 		$inventoryRaws = [];
 		$inventoryIds = [];
 
-		while ($inventoryRaw = $inventoryResult->fetchArray()) {
+		while($inventoryRaw = $inventoryResult->fetchArray()) {
 			$inventoryRaws[] = $inventoryRaw;
 			$inventoryIds[] = $inventoryRaw['inventory_id'];
 		}
@@ -173,18 +173,18 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 			/** @lang SQLite */
 				<<<SQL
 				SELECT * FROM items
-				WHERE inventory_id IN :array
+				WHERE inventory_id IN :inventorie_ids
 				SQL
 			);
-			$stmt->bindValue(':array', implode(', ', $inventoryIds));
+			$stmt->bindValue(':inventory_ids', implode(', ', $inventoryIds));
 			$itemsResult = $stmt->execute();
-		} catch (Exception $exception) {
+		} catch(Exception $exception) {
 			throw new DatabaseException($exception);
 		}
 
-		while ($itemRaw = $itemsResult->fetchArray()) {
-			foreach ($inventoryRaws as &$inventoryRaw) {
-				if ($inventoryRaw['inventory_id'] === $itemRaw['inventory_id']) {
+		while($itemRaw = $itemsResult->fetchArray()) {
+			foreach($inventoryRaws as &$inventoryRaw) {
+				if($inventoryRaw['inventory_id'] === $itemRaw['inventory_id']) {
 					$inventoryRaw['items'][$itemRaw['slot']] = $itemRaw;
 					break;
 				}
@@ -195,9 +195,9 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 	}
 
 
-	public function update(array $inventory) : void {
+	public function update(array $inventoryRaw) : void {
 		try {
-			foreach ($inventory['items'] as $slot => $item) {        // OPTIMIZE: ループ中のクエリ発行をどうにかする
+			foreach($inventoryRaw['items'] as $slot => $item) {        // OPTIMIZE: ループ中のクエリ発行をどうにかする
 				$stmt = $this->db->prepare(
 				/** @lang SQLite */
 					<<<SQL
@@ -209,10 +209,24 @@ class SQLiteVirtualInventoryDAO implements VirtualInventoryDAO, Transactionable 
 				$stmt->bindValue('count', $item['count']);
 				$stmt->bindValue('damage', $item['damage']);
 				$stmt->bindValue('nbt_b64', $item['nbt_64']);
-				$stmt->bindValue('inventory_id', $inventory['inventory_id']);
+				$stmt->bindValue('inventory_id', $inventoryRaw['inventory_id']);
 				$stmt->execute();
 			}
-		} catch (Exception $exception) {
+		} catch(Exception $exception) {
+			throw new DatabaseException($exception);
+		}
+
+		try {
+			$stmt = $this->db->prepare(
+				<<<SQL
+				UPDATE inventories SET inventory_title = :inventory_title
+				WHERE inventory_id = :inventory_id
+				SQL
+			);
+			$stmt->bindValue(':inventory_id', $inventoryRaw['inventory_title']);
+			$stmt->bindValue('inventory_title', $inventoryRaw['inventory_title']);
+			$stmt->execute();
+		} catch(Exception $exception) {
 			throw new DatabaseException($exception);
 		}
 	}
