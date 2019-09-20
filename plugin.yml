@@ -1,4 +1,4 @@
 name: VirtualInventory
-version: 0.1.2
+version: 0.1.3
 api: [3.0.0]
 main: uramnoil\virtualinventory\VirtualInventoryPlugin

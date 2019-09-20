@@ -10,7 +10,7 @@ interface VirtualInventoryAPI {
 	 * IDからVirtualChestInventory探します.
 	 *
 	 * @param  int  $id
-	 * @param  callable  $onDone  (VirtualChestInventory) -> void
+	 * @param  callable  $onDone  (PerpetuatedVirtualChestInventory) -> void
 	 */
 	public function findById(int $id, callable $onDone) : void;
 
@@ -18,7 +18,7 @@ interface VirtualInventoryAPI {
 	 * プレイヤーが所有しているVirtualChestInventoryを配列で返します.
 	 *
 	 * @param  IPlayer  $owner
-	 * @param  callable  $onDone  (VirtualChestInventory[]) -> void
+	 * @param  callable  $onDone  (PerpetuatedVirtualChestInventory[]) -> void
 	 */
 	public function findByOwner(IPlayer $owner, callable $onDone) : void;
 
@@ -34,7 +34,7 @@ interface VirtualInventoryAPI {
 	 * @param  IPlayer  $owner
 	 * @param  int  $type
 	 * @param  string  $title
-	 * @param  callable  $onDone  (VirtualChestInventory) -> void
+	 * @param  callable  $onDone  (PerpetuatedVirtualChestInventory) -> void
 	 *
 	 */
 	public function new(IPlayer $owner, int $type, string $title, callable $onDone) : void;

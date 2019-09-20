@@ -40,7 +40,7 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 	}
 
 	public function onDisable() {
-	    $this->factory->close();
+		$this->factory->close();
 	}
 
 	public function getAPI() : VirtualInventoryAPI {
@@ -52,9 +52,10 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
 
-		Utils::validateCallableSignature(function(?PerpetuatedVirtualInventory $inventory) : void{}, $onDone);
+		Utils::validateCallableSignature(function(?PerpetuatedVirtualInventory $inventory) : void {
+		}, $onDone);
 
-		$task = new TransactionWithResultTask(function() use($id) : ?PerpetuatedVirtualInventory {
+		$task = new TransactionWithResultTask(function() use ($id) : ?PerpetuatedVirtualInventory {
 			return $this->inventoryRepository->findById($id);
 		}, $onDone);
 
@@ -66,9 +67,10 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 			throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 		}
 
-		Utils::validateCallableSignature(function(array $inventories) : void{}, $onDone);
+		Utils::validateCallableSignature(function(array $inventories) : void {
+		}, $onDone);
 
-		$task = new TransactionWithResultTask(function() use($owner) : array {
+		$task = new TransactionWithResultTask(function() use ($owner) : array {
 			return $this->inventoryRepository->findByOwner($owner);
 		}, $onDone);
 
@@ -81,10 +83,12 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		}
 
 		isset($onDone) ?
-			Utils::validateCallableSignature(function(?object $result) : void{}, $onDone)
-			: $onDone = function(?object $result) : void {};
+			Utils::validateCallableSignature(function() : void {
+			}, $onDone)
+			: $onDone = function() : void {
+		};
 
-		$task = new TransactionTask(function() use($inventory) : void {
+		$task = new TransactionTask(function() use ($inventory) : void {
 			if($this->isDisabled()) {
 				throw new VirtualInventoryException('VirtualInventoryPlugin is disabled.');
 			}
@@ -101,7 +105,8 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 
 		$task = new TransactionTask(function() use ($owner, $type, $title) : PerpetuatedVirtualInventory {
 			return $this->inventoryRepository->new($owner, $type, $title);
-		}, $onDone ?? function(PerpetuatedVirtualInventory $inventory) : void {});
+		}, $onDone ?? function(PerpetuatedVirtualInventory $inventory) : void {
+			});
 
 		$this->submitTask($task);
 	}
@@ -112,8 +117,10 @@ class VirtualInventoryPlugin extends PluginBase implements VirtualInventoryAPI {
 		}
 
 		$onDone !== null ?
-			Utils::validateCallableSignature(function() : void{}, $onDone)
-			: $onDone = function(object $onUse) : void {};
+			Utils::validateCallableSignature(function() : void {
+			}, $onDone)
+			: $onDone = function() : void {
+		};
 
 		$task = new TransactionTask(function() use ($inventory) : void {
 			$this->inventoryRepository->save($inventory);
